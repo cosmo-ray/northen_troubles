@@ -1,0 +1,42 @@
+[
+    {
+	"gender": "male",
+	"name": "guard",
+	"life": 12,
+	"max_life": 12,
+	"type": "tanned",
+	"stats": {
+	    "strength": 3,
+	    "charm": 1,
+	    "smart": 1,
+	    "agility": 3
+	}
+    },
+    {
+	"gender": "male",
+	"name": "peasant",
+	"life": 5,
+	"max_life": 5,
+	"type": "tanned",
+	"stats": {
+	    "strength": 3,
+	    "charm": 1,
+	    "smart": 2,
+	    "agility": 1
+	}
+    },
+    {
+	"gender": "male",
+	"name": "orc",
+	"life": 20,
+	"max_life": 20,
+	"type": "orcs/4",
+	"stats": {
+	    "strength": 5,
+	    "charm": 0,
+	    "smart": 0,
+	    "agility": 2
+	},
+    }
+
+]
