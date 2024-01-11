@@ -62,20 +62,10 @@ function select_country(wid, eves)
     }
 }
 
-function back(wid)
-{
-    print("BACK !")
-}
-
 let main_buttons = []
 
-function nt_action(wid, eves)
+function country_action(wid, eves, selected_country)
 {
-    let selected_country = wid.get("selected_country")
-
-    if (!selected_country)
-	return select_country(wid, eves)
-
     let map = wid.get("map")
     let wid_pix = yeGet(wid, "wid-pix");
 
@@ -118,18 +108,41 @@ function nt_action(wid, eves)
 	}
 
     for (button of main_buttons) {
-	    let r = ywRectCreateInts(button[0][0], button[0][1], button[0][2], button[0][3])
+	let r = ywRectCreateInts(button[0][0], button[0][1], button[0][2], button[0][3])
 
-	    print(ywRectContainPos(r, mouse_pos, 1))
-	    if (ywRectContainPos(r, mouse_pos, 1)) {
+	print(ywRectContainPos(r, mouse_pos, 1))
+	if (ywRectContainPos(r, mouse_pos, 1)) {
+	    if (yevAnyMouseDown(eves))
+		button[1](wid)
+	    else {
 		wid.setAt("bt_highlight",
 			  ywCanvasNewRectangleExt(wid, button[0][0], button[0][1],
 						  button[0][2], button[0][3],
 						  "rgba: 120 140 130 100", 3))
-		if (yevAnyMouseDown(eves))
-		    button[1](wid)
 	    }
 	}
+    }
+
+}
+
+function back(wid)
+{
+    main_buttons = []
+    wid.get("country_ux").forEach(function(c, i) {
+	ywCanvasRemoveObj(wid, c)
+    })
+    wid.rm("country_ux")
+    wid.rm("selected_country")
+}
+
+function nt_action(wid, eves)
+{
+    let selected_country = wid.get("selected_country")
+
+    if (!selected_country)
+	return select_country(wid, eves)
+
+    return country_action(wid, eves, selected_country)
 }
 
 function nt_init(wid, map_str)
