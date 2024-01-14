@@ -158,17 +158,69 @@ function nt_init(wid, map_str)
 
 
     let map = ygFileToEnt(YJSON, "./map.json")
+    let units = ygFileToEnt(YJSON, "./units.json")
+
+    yePrint(units)
 
     wid.setAt("imgbg", ywCanvasNewImgByPath(wid, 0, 0, "./map.png"));
     ywCanvasForceSize(wid.get("imgbg"), bg_size)
     ywSetTurnLengthOverwrite(-1)
 
     yePush(wid, map, "map")
+    yePush(wid, units, "units")
+    let squads = yeCreateHash(wid, "squads")
 
     map.forEach(function (state, i) {
 	if (state.get("where")) {
 	    ywCanvasNewPolygonExt(wid, state.get("where"), contry_colors[i], 1)
 	}
+	let sqs = yeCreateArray(squads, yeGetKeyAt(map, i))
+	let state_size = state.geti("size")
+	if (state.gets("type") == "town") {
+	    let sq = yeCreateHash(sqs, "guards")
+
+	    sq.setAt("faction", "neutral")
+	    let guys = yeCreateArray(sq, "guys")
+	    yeCreateCopy(units.get("guard"), guys)
+	    if (state_size == 2 || sate_size == 3) {
+		yeCreateCopy(units.get("guard"), guys)
+		yeCreateCopy(units.get("guard"), guys)
+		yeCreateCopy(units.get("guard"), guys)
+		yeCreateCopy(units.get("guard"), guys)
+		yeCreateCopy(units.get("guard"), guys)
+	    } else if (state_size == 1) {
+		yeCreateCopy(units.get("peasant"), guys)
+		yeCreateCopy(units.get("peasant"), guys)
+		yeCreateCopy(units.get("peasant"), guys)
+		yeCreateCopy(units.get("guard"), guys)
+		yeCreateCopy(units.get("peasant"), guys)
+	    }
+	} else if (state.gets("type") == "field") {
+	    let sq = yeCreateHash(sqs, "guards")
+
+	    let guys = yeCreateArray(sq, "guys")
+	    if (state_size == 0) {
+		sq.setAt("faction", "neutral")
+		yeCreateCopy(units.get("peasant"), guys)
+		yeCreateCopy(units.get("peasant"), guys)
+		yeCreateCopy(units.get("peasant"), guys)
+	    } else {
+		sq.setAt("faction", "bad")
+		yeCreateCopy(units.get("orc"), guys)
+		yeCreateCopy(units.get("orc"), guys)
+		yeCreateCopy(units.get("orc"), guys)
+		yeCreateCopy(units.get("orc"), guys)
+	    }
+	}
+	if (i == 0) {
+	    let sq = yeCreateHash(sqs, "squad Nb-1")
+
+	    sq.setAt("faction", "good")
+	    let guys = yeCreateArray(sq, "guys")
+	    for (let i = 0; i < 6; ++i)
+		yeCreateCopy(units.get("guard"), guys)
+	}
+	yePrint(sqs)
     })
 
     return ret

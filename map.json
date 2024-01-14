@@ -1,6 +1,7 @@
 {
     "southgate": {
 	"type": "town",
+	"size": 2,
 	"where": [
 	    [ 277 , 378 ],
 	    [ 323 , 382 ],
@@ -13,6 +14,7 @@
     },
     "southgate north": {
 	"type": "road",
+	"size": 0,
 	"where": [
 	    [ 196 , 296 ],
 	    [ 312 , 300 ],
@@ -23,6 +25,7 @@
     },
     "south field": {
 	"type": "field",
+	"size": 1,
 	"where": [
 	    [ 343 , 359 ],
 	    [ 405 , 341 ],
@@ -33,6 +36,8 @@
 	]
     },
     "east field": {
+	"type": "field",
+	"size": 2,
 	"where": [
 	    [ 11 , 242 ],
 	    [ 180 , 240 ],
@@ -42,6 +47,7 @@
     },
     "Hator": {
 	"type": "town",
+	"size": 1,
 	"where": [
 	    [ 174 , 197 ],
 	    [ 192 , 203 ],
@@ -55,6 +61,8 @@
 	]
     },
     "Hator South": {
+	"type": "field",
+	"size": 3,
 	"where": [
 	    [ 184 , 237 ],
 	    [ 218 , 235 ],
@@ -67,6 +75,7 @@
     },
     "eastgate": {
 	"type": "town",
+	"size": 3,
 	"where": [
 	    [ 541 , 95 ],
 	    [ 552 , 128 ],
@@ -81,6 +90,7 @@
     },
     "furgate": {
 	"type": "town",
+	"size": 2,
 	"where": [
 	    [ 374 , 177 ],
 	    [ 391 , 168 ],

@@ -1,5 +1,5 @@
-[
-    {
+{
+    "guard": {
 	"gender": "male",
 	"name": "guard",
 	"life": 12,
@@ -12,7 +12,7 @@
 	    "agility": 3
 	}
     },
-    {
+    "peasant" :{
 	"gender": "male",
 	"name": "peasant",
 	"life": 5,
@@ -25,7 +25,7 @@
 	    "agility": 1
 	}
     },
-    {
+    "orc": {
 	"gender": "male",
 	"name": "orc",
 	"life": 20,
@@ -38,5 +38,4 @@
 	    "agility": 2
 	},
     }
-
-]
+}
