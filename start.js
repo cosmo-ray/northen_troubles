@@ -64,6 +64,58 @@ function select_country(wid, eves)
 
 let main_buttons = []
 
+function reset_flags(wid)
+{
+    let all_flags = yeTryCreateArray(wid, "all_flags")
+    let squads_per_state = yeGet(wid, "squads")
+    let flag_size = ywSizeCreate(25, 25)
+    let states = wid.get("map")
+
+    ywCanvasClearArray(wid, all_flags)
+
+    squads_per_state.forEach(function (squads, k) {
+	let flag_type = null
+	let state = states.get(k)
+	let x = state.get("where").get(0).geti(0)
+	let y = state.get("where").get(0).geti(1)
+
+	for (let j = 0; j < yeLen(squads); ++j) {
+	    let f_name = squads.get(j).gets("faction") + "_flag";
+
+	    print(f_name)
+	    let f = ywCanvasNewImgFromTexture(wid, x, y, wid.get(f_name))
+	    ywCanvasForceSize(f, flag_size)
+	    x = x + 30
+	}
+
+    })
+}
+
+function square_txt(wid, container, x, y, color, txt)
+{
+    const split_txt = txt.split("\n")
+    let w = 0
+    for (line of split_txt) {
+	const tmp_w = line.length * ywidFontW() + 10
+	if (tmp_w > w) {
+	    w = tmp_w
+	}
+    }
+    const h = ywidFontH() * split_txt.length + 10
+    let txt_y_threshold = 2
+    if (h > 40)
+	txt_y_threshold = 10
+
+    yePushBack(container,
+	       ywCanvasNewRectangleExt(wid, x, y, w,
+				       h, "rgba: " + color + " 255", 2))
+    yePushBack(container,
+	       ywCanvasNewRectangleExt(wid, x, y, w,
+				       h, "rgba: " + color + " 100", 3))
+    yePushBack(container, ywCanvasNewTextByStr(wid, x + txt_y_threshold, y + 2, txt))
+    return [w, h]
+}
+
 function country_action(wid, eves, selected_country)
 {
     let map = wid.get("map")
@@ -74,29 +126,14 @@ function country_action(wid, eves, selected_country)
 	country_ux = yeCreateArray(wid, "country_ux")
 
 	/* contry name */
-	let name_size = 100
 	let name = yeGetKeyAt(map, selected_country.i())
-	if (name.length > 10)
-	    name_size = 150
-	print(name.length)
+	square_txt(wid, country_ux, 10, 10, "20 40 230", name)
 
-	yePushBack(country_ux,
-		   ywCanvasNewRectangleExt(wid, 10, 10, name_size,
-					   30, "rgba: 20 40 230 255", 2))
-	yePushBack(country_ux,
-		   ywCanvasNewRectangleExt(wid, 10, 10, name_size,
-					   30, "rgba: 20 40 230 100", 3))
-	yePushBack(country_ux, ywCanvasNewTextByStr(wid, 12, 12, name))
+	square_txt(wid, country_ux, 10, 50, "20 40 230", "Square present in town:\nbut not\nimplement\nyet :p")
 
 	/* back */
-	yePushBack(country_ux,
-		   ywCanvasNewRectangleExt(wid, ywRectW(wid_pix) - 70, 10, 60, 30,
-					   "rgba: 120 140 130 255", 2))
-	yePushBack(country_ux,
-		   ywCanvasNewRectangleExt(wid, ywRectW(wid_pix) - 70, 10, 60, 30,
-					   "rgba: 120 140 130 100", 3))
-	yePushBack(country_ux, ywCanvasNewTextByStr(wid, ywRectW(wid_pix) - 68, 12, "Back"))
-	main_buttons.push([[ywRectW(wid_pix) - 70, 10, 60, 30], back])
+	let w_h = square_txt(wid, country_ux, ywRectW(wid_pix) - 70, 10, "120 140 130", "Back")
+	main_buttons.push([[ywRectW(wid_pix) - 70, 10, w_h[0], w_h[1]], back])
     }
 
     let mouse_pos = yevMousePos(eves)
@@ -110,7 +147,6 @@ function country_action(wid, eves, selected_country)
     for (button of main_buttons) {
 	let r = ywRectCreateInts(button[0][0], button[0][1], button[0][2], button[0][3])
 
-	print(ywRectContainPos(r, mouse_pos, 1))
 	if (ywRectContainPos(r, mouse_pos, 1)) {
 	    if (yevAnyMouseDown(eves))
 		button[1](wid)
@@ -149,6 +185,7 @@ function nt_init(wid, map_str)
 {
     yeConvert(wid, YHASH)
 
+    ywSetTurnLengthOverwrite(-1)
     yeCreateFunction(nt_action, wid, "action")
     yeCreateString("rgba: 255 255 255 255", wid, "background")
 
@@ -160,11 +197,15 @@ function nt_init(wid, map_str)
     let map = ygFileToEnt(YJSON, "./map.json")
     let units = ygFileToEnt(YJSON, "./units.json")
 
-    yePrint(units)
+    let rect_texture = ywRectCreateInts(0, 0, 32, 32)
+    ywTextureNewImg("flag_captured.png", rect_texture, wid, "neutral_flag")
+    rect_texture = ywRectCreateInts(0, 32, 16, 16)
+    ywTextureNewImg("flags.png", rect_texture, wid, "good_flag")
+    rect_texture = ywRectCreateInts(0, 16, 16, 16)
+    ywTextureNewImg("flags.png", rect_texture, wid, "bad_flag")
 
     wid.setAt("imgbg", ywCanvasNewImgByPath(wid, 0, 0, "./map.png"));
     ywCanvasForceSize(wid.get("imgbg"), bg_size)
-    ywSetTurnLengthOverwrite(-1)
 
     yePush(wid, map, "map")
     yePush(wid, units, "units")
@@ -196,15 +237,18 @@ function nt_init(wid, map_str)
 		yeCreateCopy(units.get("peasant"), guys)
 	    }
 	} else if (state.gets("type") == "field") {
-	    let sq = yeCreateHash(sqs, "guards")
-
-	    let guys = yeCreateArray(sq, "guys")
 	    if (state_size == 0) {
+		let sq = yeCreateHash(sqs, "guards")
+		let guys = yeCreateArray(sq, "guys")
+
 		sq.setAt("faction", "neutral")
 		yeCreateCopy(units.get("peasant"), guys)
 		yeCreateCopy(units.get("peasant"), guys)
 		yeCreateCopy(units.get("peasant"), guys)
 	    } else {
+		let sq = yeCreateHash(sqs, "enemies")
+		let guys = yeCreateArray(sq, "guys")
+
 		sq.setAt("faction", "bad")
 		yeCreateCopy(units.get("orc"), guys)
 		yeCreateCopy(units.get("orc"), guys)
@@ -220,8 +264,8 @@ function nt_init(wid, map_str)
 	    for (let i = 0; i < 6; ++i)
 		yeCreateCopy(units.get("guard"), guys)
 	}
-	yePrint(sqs)
     })
+    reset_flags(wid)
 
     return ret
 }
