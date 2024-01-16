@@ -20,6 +20,51 @@ let contry_colors = [
     "rgba: 200 200 200 120"
 ]
 
+function squad_push(wid, squad)
+{
+    const units = wid.get("units")
+    const nb_args = arguments.length
+
+    for (let i = 2; i < nb_args; ++i) {
+	yeCreateCopy(units.get(arguments[i]), squad)
+    }
+}
+
+function new_squad(sqs, name)
+{
+    let sq = yeCreateHash(sqs, name)
+    sq.setAt("have_move", 0)
+    return sq
+}
+
+let main_buttons = []
+
+function check_button(wid, eves)
+{
+    let mouse_pos = yevMousePos(eves)
+
+    if (mouse_pos)
+	if (wid.get("bt_highlight")) {
+	    ywCanvasRemoveObj(wid, wid.get("bt_highlight"))
+	    wid.rm("bt_highlight")
+	}
+    for (button of main_buttons) {
+	let r = ywRectCreateInts(button[0][0], button[0][1], button[0][2], button[0][3])
+
+	if (ywRectContainPos(r, mouse_pos, 1)) {
+	    if (yevAnyMouseDown(eves))
+		button[1](wid)
+	    else {
+		wid.setAt("bt_highlight",
+			  ywCanvasNewRectangleExt(wid, button[0][0], button[0][1],
+						  button[0][2], button[0][3],
+						  "rgba: 120 140 130 100", 3))
+	    }
+	}
+    }
+
+}
+
 function select_country(wid, eves)
 {
     let mouse_pos = yevMousePos(eves)
@@ -31,12 +76,21 @@ function select_country(wid, eves)
 	mouse_press = true
     }
 
+    if (main_buttons.length == 0) {
+	let ux = yeTryCreateArray(wid, "select_ux")
+	let wid_pix = yeGet(wid, "wid-pix");
+	let w_h = square_txt(wid, ux, ywRectW(wid_pix) - 80, 10, "120 140 130", "End Turn")
+
+	main_buttons.push([[ywRectW(wid_pix) - 80, 10, w_h[0], w_h[1]], end_turn])
+    }
+
     if (mouse_pos) {
 	if (wid.get("can_col")) {
 	    ywCanvasRemoveObj(wid, wid.get("can_col"))
 	    wid.rm("can_col")
 	}
 
+	check_button(wid, eves)
 	map.forEach(function(contry, i) {
 	    let poly = contry.get("where")
 	    let have_col_x = false
@@ -55,14 +109,17 @@ function select_country(wid, eves)
 	    if (have_col_x && have_col_y) {
 		print("can col: ", yeGetKeyAt(map, i))
 		wid.setAt("can_col", ywCanvasNewPolygonExt(wid, poly, contry_colors[i], 1))
-		if (mouse_press)
+		if (mouse_press) {
 		    wid.setAt("selected_country", i)
+		    wid.get("select_ux").forEach(function(c, i) {
+			ywCanvasRemoveObj(wid, c)
+		    })
+		    main_buttons = []
+		}
 	    }
 	})
     }
 }
-
-let main_buttons = []
 
 function reset_flags(wid)
 {
@@ -127,38 +184,43 @@ function country_action(wid, eves, selected_country)
 
 	/* contry name */
 	let name = yeGetKeyAt(map, selected_country.i())
+	let squads = wid.get("squads").get(name)
 	square_txt(wid, country_ux, 10, 10, "20 40 230", name)
 
-	square_txt(wid, country_ux, 10, 50, "20 40 230", "Square present in town:\nbut not\nimplement\nyet :p")
+	square_txt(wid, country_ux, 10, 50, "20 40 230", "Squades present in town:")
+	let s_y = 85
+	squads.forEach(function (s, i) {
+	    let name = yeGetKeyAt(squads, i)
+	    let size = yeLen(s.get("guys"))
+	    let color = "100 100 100"
+	    let faction = s.gets("faction")
+
+	    if (faction == "good")
+		color = "30 200 30"
+	    else if (faction == "bad")
+		color = "200 30 30"
+	    let w_h = square_txt(wid, country_ux, 10, s_y, color, name + " of " + size)
+	    if (faction == "good") {
+		main_buttons.push([[10, s_y, w_h[0], w_h[1]], sq_select])
+	    }
+	    s_y += 35
+	})
 
 	/* back */
 	let w_h = square_txt(wid, country_ux, ywRectW(wid_pix) - 70, 10, "120 140 130", "Back")
 	main_buttons.push([[ywRectW(wid_pix) - 70, 10, w_h[0], w_h[1]], back])
     }
+    check_button(wid, eves)
+}
 
-    let mouse_pos = yevMousePos(eves)
+function end_turn(wid)
+{
+    print("end turn !!")
+}
 
-    if (mouse_pos)
-	if (wid.get("bt_highlight")) {
-	    ywCanvasRemoveObj(wid, wid.get("bt_highlight"))
-	    wid.rm("bt_highlight")
-	}
-
-    for (button of main_buttons) {
-	let r = ywRectCreateInts(button[0][0], button[0][1], button[0][2], button[0][3])
-
-	if (ywRectContainPos(r, mouse_pos, 1)) {
-	    if (yevAnyMouseDown(eves))
-		button[1](wid)
-	    else {
-		wid.setAt("bt_highlight",
-			  ywCanvasNewRectangleExt(wid, button[0][0], button[0][1],
-						  button[0][2], button[0][3],
-						  "rgba: 120 140 130 100", 3))
-	    }
-	}
-    }
-
+function sq_select(wid)
+{
+    print("sq select !!")
 }
 
 function back(wid)
@@ -218,51 +280,37 @@ function nt_init(wid, map_str)
 	let sqs = yeCreateArray(squads, yeGetKeyAt(map, i))
 	let state_size = state.geti("size")
 	if (state.gets("type") == "town") {
-	    let sq = yeCreateHash(sqs, "guards")
+	    let sq = new_squad(sqs, "guards")
 
 	    sq.setAt("faction", "neutral")
 	    let guys = yeCreateArray(sq, "guys")
-	    yeCreateCopy(units.get("guard"), guys)
+	    squad_push(wid, guys, "guard")
 	    if (state_size == 2 || sate_size == 3) {
-		yeCreateCopy(units.get("guard"), guys)
-		yeCreateCopy(units.get("guard"), guys)
-		yeCreateCopy(units.get("guard"), guys)
-		yeCreateCopy(units.get("guard"), guys)
-		yeCreateCopy(units.get("guard"), guys)
+		squad_push(wid, guys, "guard", "guard", "guard", "guard", "guard")
 	    } else if (state_size == 1) {
-		yeCreateCopy(units.get("peasant"), guys)
-		yeCreateCopy(units.get("peasant"), guys)
-		yeCreateCopy(units.get("peasant"), guys)
-		yeCreateCopy(units.get("guard"), guys)
-		yeCreateCopy(units.get("peasant"), guys)
+		squad_push(wid, guys, "peasant", "peasant", "peasant", "guard", "peasant")
 	    }
 	} else if (state.gets("type") == "field") {
 	    if (state_size == 0) {
-		let sq = yeCreateHash(sqs, "guards")
+		let sq = new_squad(sqs, "guards")
 		let guys = yeCreateArray(sq, "guys")
 
 		sq.setAt("faction", "neutral")
-		yeCreateCopy(units.get("peasant"), guys)
-		yeCreateCopy(units.get("peasant"), guys)
-		yeCreateCopy(units.get("peasant"), guys)
+		squad_push(wid, guys, "peasant", "peasant", "peasant")
 	    } else {
-		let sq = yeCreateHash(sqs, "enemies")
+		let sq = new_squad(sqs, "enemies")
 		let guys = yeCreateArray(sq, "guys")
 
 		sq.setAt("faction", "bad")
-		yeCreateCopy(units.get("orc"), guys)
-		yeCreateCopy(units.get("orc"), guys)
-		yeCreateCopy(units.get("orc"), guys)
-		yeCreateCopy(units.get("orc"), guys)
+		squad_push(wid, guys, "orc", "orc", "orc", "orc")
 	    }
 	}
 	if (i == 0) {
-	    let sq = yeCreateHash(sqs, "squad Nb-1")
+	    let sq = new_squad(sqs, "squad Nb-1")
 
 	    sq.setAt("faction", "good")
 	    let guys = yeCreateArray(sq, "guys")
-	    for (let i = 0; i < 6; ++i)
-		yeCreateCopy(units.get("guard"), guys)
+	    squad_push(wid, guys, "guard", "guard", "guard", "guard", "guard", "guard")
 	}
     })
     reset_flags(wid)
