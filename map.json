@@ -2,6 +2,7 @@
     "southgate": {
 	"type": "town",
 	"size": 2,
+	"to": ["southgate north", "south field", "east field"],
 	"where": [
 	    [ 277 , 378 ],
 	    [ 323 , 382 ],
@@ -48,6 +49,7 @@
     "Hator": {
 	"type": "town",
 	"size": 1,
+	"to": ["Hator South"],
 	"where": [
 	    [ 174 , 197 ],
 	    [ 192 , 203 ],

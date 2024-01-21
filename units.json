@@ -12,6 +12,19 @@
 	    "agility": 3
 	}
     },
+    "bandit": {
+	"gender": "male",
+	"name": "guard",
+	"life": 13,
+	"max_life": 13,
+	"type": "tanned",
+	"stats": {
+	    "strength": 4,
+	    "charm": 1,
+	    "smart": 1,
+	    "agility": 2
+	}
+    },
     "peasant" :{
 	"gender": "male",
 	"name": "peasant",

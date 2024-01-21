@@ -20,6 +20,12 @@ let contry_colors = [
     "rgba: 200 200 200 120"
 ]
 
+let type_to_income = {
+    "field": 3,
+    "town": 10,
+    "road": 5
+}
+
 function squad_push(wid, squad)
 {
     const units = wid.get("units")
@@ -38,31 +44,33 @@ function new_squad(sqs, name)
 }
 
 let main_buttons = []
+let to_buttons = []
 
-function check_button(wid, eves)
+function check_button(wid, eves, buttons, no_clean)
 {
     let mouse_pos = yevMousePos(eves)
+    let bt_highlight = yeTryCreateArray(wid, "bt_highlight")
 
     if (mouse_pos)
-	if (wid.get("bt_highlight")) {
-	    ywCanvasRemoveObj(wid, wid.get("bt_highlight"))
-	    wid.rm("bt_highlight")
+	if (!no_clean) {
+	    if (bt_highlight) {
+		ywCanvasClearArray(wid, bt_highlight)
+	    }
 	}
-    for (button of main_buttons) {
+    for (button of buttons) {
 	let r = ywRectCreateInts(button[0][0], button[0][1], button[0][2], button[0][3])
 
 	if (ywRectContainPos(r, mouse_pos, 1)) {
 	    if (yevAnyMouseDown(eves))
-		button[1](wid)
+		button[1](wid, button[2])
 	    else {
-		wid.setAt("bt_highlight",
-			  ywCanvasNewRectangleExt(wid, button[0][0], button[0][1],
-						  button[0][2], button[0][3],
-						  "rgba: 120 140 130 100", 3))
+		yePushBack(bt_highlight,
+			   ywCanvasNewRectangleExt(wid, button[0][0], button[0][1],
+						   button[0][2], button[0][3],
+						   "rgba: 120 140 130 100", 3))
 	    }
 	}
     }
-
 }
 
 function select_country(wid, eves)
@@ -82,6 +90,8 @@ function select_country(wid, eves)
 	let w_h = square_txt(wid, ux, ywRectW(wid_pix) - 80, 10, "120 140 130", "End Turn")
 
 	main_buttons.push([[ywRectW(wid_pix) - 80, 10, w_h[0], w_h[1]], end_turn])
+
+	square_txt(wid, ux, 10, 10, "120 140 130", "wealth: " + wid.geti("wealth"))
     }
 
     if (mouse_pos) {
@@ -90,7 +100,7 @@ function select_country(wid, eves)
 	    wid.rm("can_col")
 	}
 
-	check_button(wid, eves)
+	check_button(wid, eves, main_buttons)
 	map.forEach(function(contry, i) {
 	    let poly = contry.get("where")
 	    let have_col_x = false
@@ -201,7 +211,7 @@ function country_action(wid, eves, selected_country)
 		color = "200 30 30"
 	    let w_h = square_txt(wid, country_ux, 10, s_y, color, name + " of " + size)
 	    if (faction == "good") {
-		main_buttons.push([[10, s_y, w_h[0], w_h[1]], sq_select])
+		main_buttons.push([[10, s_y, w_h[0], w_h[1]], sq_select, s])
 	    }
 	    s_y += 35
 	})
@@ -210,32 +220,143 @@ function country_action(wid, eves, selected_country)
 	let w_h = square_txt(wid, country_ux, ywRectW(wid_pix) - 70, 10, "120 140 130", "Back")
 	main_buttons.push([[ywRectW(wid_pix) - 70, 10, w_h[0], w_h[1]], back])
     }
-    check_button(wid, eves)
+    check_button(wid, eves, main_buttons)
+    check_button(wid, eves, to_buttons, true)
 }
 
 function end_turn(wid)
 {
     print("end turn !!")
+    let wealth = wid.get("wealth")
+    let all_squads = wid.get("squads")
+    let map = wid.get("map")
+    let added_wealth = 0
+    let charge = 0
+
+
+    map.forEach(function (country, i) {
+	let country_name = yeGetKeyAt(map, i)
+	let country_squads = all_squads.get(country_name)
+	let type = country.gets("type")
+	let faction_present = 0
+
+	print("GNU ? ", country_name)
+	country_squads.forEach(function (s, i) {
+	    const faction = s.gets("faction")
+	    if (faction == "good")
+		faction_present = 1
+	    else if (faction == "bad")
+		faction_present = 1 << 1
+	    else if (faction == "neutral")
+		faction_present = 1 << 2
+	})
+
+	print("faction present: ", faction_present)
+	/* good and no bad guys, neutral ignored */
+	if ((faction_present & 0x5) == 1) {
+	    added_wealth += type_to_income[type]
+	    print("added wealth: ", type_to_income[type], type)
+	}
+
+    })
+    all_squads.forEach(function (squads, country) {
+	squads.forEach(function (s, i) {
+	    if (s.gets("move_to")) {
+		print("squads ", yeGetKeyAt(squads, i), " of ", country,
+		      " move to ", s.gets("move_to"))
+		s.rm("move_to")
+	    }
+	    if (s.gets("faction") == "good") {
+		charge += 6
+	    }
+	})
+    })
+    wealth.add(-charge)
+    wealth.add(added_wealth)
+    if (wealth.i() < 0) {
+	print("Warning, Negative income !!")
+    }
+    ywCanvasClearArray(wid, wid.get("select_ux"))
+    main_buttons = []
+    let msg_ux = yeTryCreateArray(wid, "msg_ux")
+
+    turn_end_txt = "Turn end report:\n"
+    turn_end_txt += "Wealth gain: " + added_wealth
+    turn_end_txt += "\nTotal charge: " + charge
+    let w_h = square_txt(wid, msg_ux, 150, 150, "100 100 100", turn_end_txt)
+    let w_h_b = square_txt(wid, msg_ux, 150, 150 + w_h[1] + 10, "100 100 100", "Ok")
+    main_buttons.push([[150, 150 + w_h[1] + 10, w_h_b[0], w_h_b[1]], back])
 }
 
-function sq_select(wid)
+let selected_sq = null
+
+function do_move(wid, to)
 {
-    print("sq select !!")
+    print("do move: ", to)
+    yePrint(selected_sq)
+    yeCreateString(to, selected_sq, "move_to")
+    yePrint(selected_sq)
+}
+
+function move_to(wid)
+{
+    let map = wid.get("map")
+    let selected_country = wid.get("selected_country")
+    let country = map.get(selected_country.i())
+    let avaible_dest = country.get("to")
+    let ux = yeTryCreateArray(wid, "move_to_ux")
+    let b_y = 85
+
+    print("move to !!")
+    yePrint(avaible_dest)
+    avaible_dest.forEach(function (d, i) {
+	let w_h = square_txt(wid, ux, 300, b_y, "100 100 100", yeGetString(d))
+	to_buttons.push([[300, b_y, w_h[0], w_h[1]], do_move, [yeGetString(d)]])
+	b_y += 35
+    })
+}
+
+function sq_select(wid, s)
+{
+    let wid_pix = yeGet(wid, "wid-pix");
+
+    let ux = wid.get("country_ux")
+
+    print("sq select !!", selected_sq)
+    if (selected_sq) {
+	main_buttons.pop()
+	/* 3 element par button */
+	ywCanvasArrayPop(wid, ux)
+	ywCanvasArrayPop(wid, ux)
+	ywCanvasArrayPop(wid, ux)
+    }
+    selected_sq = s
+    yePrint(s)
+    let w_h = square_txt(wid, ux, 200, 85, "100 100 100", "Move")
+
+    main_buttons.push([[200, 85, w_h[0], w_h[1]], move_to])
+
 }
 
 function back(wid)
 {
     main_buttons = []
-    wid.get("country_ux").forEach(function(c, i) {
-	ywCanvasRemoveObj(wid, c)
-    })
-    wid.rm("country_ux")
+    selected_sq = null
+    ywCanvasClearArray(wid, wid.get("msg_ux"))
+    ywCanvasClearArray(wid, wid.get("move_to_ux"))
     wid.rm("selected_country")
+    ywCanvasClearArray(wid, wid.get("country_ux"))
+    wid.rm("country_ux")
 }
 
 function nt_action(wid, eves)
 {
     let selected_country = wid.get("selected_country")
+    let msg_ux = wid.get("msg_ux")
+
+    if (yeLen(msg_ux)) {
+	return check_button(wid, eves, main_buttons)
+    }
 
     if (!selected_country)
 	return select_country(wid, eves)
@@ -269,6 +390,7 @@ function nt_init(wid, map_str)
     wid.setAt("imgbg", ywCanvasNewImgByPath(wid, 0, 0, "./map.png"));
     ywCanvasForceSize(wid.get("imgbg"), bg_size)
 
+    wid.setAt("wealth", 0)
     yePush(wid, map, "map")
     yePush(wid, units, "units")
     let squads = yeCreateHash(wid, "squads")
@@ -304,6 +426,12 @@ function nt_init(wid, map_str)
 		sq.setAt("faction", "bad")
 		squad_push(wid, guys, "orc", "orc", "orc", "orc")
 	    }
+	} else if (state.gets("type") == "road") {
+	    let sq = new_squad(sqs, "enemies")
+	    let guys = yeCreateArray(sq, "guys")
+
+	    sq.setAt("faction", "bad")
+	    squad_push(wid, guys, "bandit", "bandit", "bandit", "bandit")
 	}
 	if (i == 0) {
 	    let sq = new_squad(sqs, "squad Nb-1")
