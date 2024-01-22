@@ -26,6 +26,11 @@ let type_to_income = {
     "road": 5
 }
 
+const WAIT_ACTION = 0
+const END_TURN_MOVE = 1
+const END_TURN_BATTLE = 2
+const END_TURN_REPORT = 3
+
 function squad_push(wid, squad)
 {
     const units = wid.get("units")
@@ -231,6 +236,11 @@ function country_action(wid, eves, selected_country)
 
 function end_turn(wid)
 {
+    wid.setAt("game_state", END_TURN_MOVE)
+}
+
+function end_turn_report(wid)
+{
     print("end turn !!")
     let wealth = wid.get("wealth")
     let all_squads = wid.get("squads")
@@ -358,6 +368,21 @@ function sq_select(wid, s)
 
 function nt_action(wid, eves)
 {
+    let game_state = wid.geti("game_state")
+
+    if (game_state == END_TURN_MOVE) {
+	print("end_turn_move")
+	wid.setAt("game_state", END_TURN_BATTLE)
+	return
+    } else if (game_state == END_TURN_BATTLE) {
+	print("end_turn_battle")
+	wid.setAt("game_state", END_TURN_REPORT)
+	return
+    } else if (game_state == END_TURN_REPORT) {
+	end_turn_report(wid)
+	wid.setAt("game_state", WAIT_ACTION)
+	return
+    }
     let selected_country = wid.get("selected_country")
     let msg_ux = wid.get("msg_ux")
 
@@ -398,6 +423,7 @@ function nt_init(wid, map_str)
     ywCanvasForceSize(wid.get("imgbg"), bg_size)
 
     wid.setAt("wealth", 0)
+    wid.setAt("game_state", WAIT_ACTION)
     yePush(wid, map, "map")
     yePush(wid, units, "units")
     let squads = yeCreateHash(wid, "squads")
