@@ -204,12 +204,17 @@ function country_action(wid, eves, selected_country)
 	    let size = yeLen(s.get("guys"))
 	    let color = "100 100 100"
 	    let faction = s.gets("faction")
+	    let move_to = s.gets("move_to")
 
 	    if (faction == "good")
 		color = "30 200 30"
 	    else if (faction == "bad")
 		color = "200 30 30"
-	    let w_h = square_txt(wid, country_ux, 10, s_y, color, name + " of " + size)
+	    if (move_to)
+		move_to = " -> " + move_to
+	    else
+		move_to = ""
+	    let w_h = square_txt(wid, country_ux, 10, s_y, color, name + " of " + size + move_to)
 	    if (faction == "good") {
 		main_buttons.push([[10, s_y, w_h[0], w_h[1]], sq_select, s])
 	    }
@@ -290,12 +295,25 @@ function end_turn(wid)
 
 let selected_sq = null
 
+function back(wid)
+{
+    main_buttons = []
+    selected_sq = null
+    ywCanvasClearArray(wid, wid.get("msg_ux"))
+    ywCanvasClearArray(wid, wid.get("move_to_ux"))
+    wid.rm("selected_country")
+    ywCanvasClearArray(wid, wid.get("country_ux"))
+    wid.rm("country_ux")
+    to_buttons = []
+}
+
 function do_move(wid, to)
 {
     print("do move: ", to)
     yePrint(selected_sq)
     yeCreateString(to, selected_sq, "move_to")
     yePrint(selected_sq)
+    back(wid)
 }
 
 function move_to(wid)
@@ -310,8 +328,8 @@ function move_to(wid)
     print("move to !!")
     yePrint(avaible_dest)
     avaible_dest.forEach(function (d, i) {
-	let w_h = square_txt(wid, ux, 300, b_y, "100 100 100", yeGetString(d))
-	to_buttons.push([[300, b_y, w_h[0], w_h[1]], do_move, [yeGetString(d)]])
+	let w_h = square_txt(wid, ux, 450, b_y, "100 100 100", yeGetString(d))
+	to_buttons.push([[450, b_y, w_h[0], w_h[1]], do_move, [yeGetString(d)]])
 	b_y += 35
     })
 }
@@ -332,21 +350,10 @@ function sq_select(wid, s)
     }
     selected_sq = s
     yePrint(s)
-    let w_h = square_txt(wid, ux, 200, 85, "100 100 100", "Move")
+    let w_h = square_txt(wid, ux, 300, 85, "100 100 100", "Move")
 
-    main_buttons.push([[200, 85, w_h[0], w_h[1]], move_to])
+    main_buttons.push([[300, 85, w_h[0], w_h[1]], move_to])
 
-}
-
-function back(wid)
-{
-    main_buttons = []
-    selected_sq = null
-    ywCanvasClearArray(wid, wid.get("msg_ux"))
-    ywCanvasClearArray(wid, wid.get("move_to_ux"))
-    wid.rm("selected_country")
-    ywCanvasClearArray(wid, wid.get("country_ux"))
-    wid.rm("country_ux")
 }
 
 function nt_action(wid, eves)
