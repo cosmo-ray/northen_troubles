@@ -6,7 +6,7 @@
 /* guys base stats */
 /* guys equipements */
 
-let contry_colors = [
+const contry_colors = [
     "rgba: 100 100 100 120",
     "rgba: 200 100 100 120",
     "rgba: 100 200 100 120",
@@ -20,7 +20,7 @@ let contry_colors = [
     "rgba: 200 200 200 120"
 ]
 
-let type_to_income = {
+const type_to_income = {
     "field": 3,
     "town": 10,
     "road": 5
@@ -30,6 +30,8 @@ const WAIT_ACTION = 0
 const END_TURN_MOVE = 1
 const END_TURN_BATTLE = 2
 const END_TURN_REPORT = 3
+
+let nt_container = null
 
 function squad_push(wid, squad)
 {
@@ -156,6 +158,7 @@ function reset_flags(wid)
 
 	    print(f_name)
 	    let f = ywCanvasNewImgFromTexture(wid, x, y, wid.get(f_name))
+	    all_flags.push(f)
 	    ywCanvasForceSize(f, flag_size)
 	    x = x + 30
 	}
@@ -276,11 +279,6 @@ function end_turn_report(wid)
     })
     all_squads.forEach(function (squads, country) {
 	squads.forEach(function (s, i) {
-	    if (s.gets("move_to")) {
-		print("squads ", yeGetKeyAt(squads, i), " of ", country,
-		      " move to ", s.gets("move_to"))
-		s.rm("move_to")
-	    }
 	    if (s.gets("faction") == "good") {
 		charge += 6
 	    }
@@ -371,7 +369,21 @@ function nt_action(wid, eves)
     let game_state = wid.geti("game_state")
 
     if (game_state == END_TURN_MOVE) {
+	let all_squads = wid.get("squads")
+
 	print("end_turn_move")
+	all_squads.forEach(function (squads, country) {
+	    squads.forEach(function (s, i) {
+		if (s.gets("move_to")) {
+		    print("squads ", yeGetKeyAt(squads, i), " of ", country,
+			  " move to ", s.gets("move_to"))
+		    //yePushBack(all_squads.get(s.gets("move_to")), s)
+		    let r = yeMoveByEntity(squads, all_squads.get(s.gets("move_to")),
+					   s, yeGetKeyAt(squads, i))
+		}
+	    })
+	})
+	reset_flags(wid)
 	wid.setAt("game_state", END_TURN_BATTLE)
 	return
     } else if (game_state == END_TURN_BATTLE) {
@@ -396,15 +408,11 @@ function nt_action(wid, eves)
     return country_action(wid, eves, selected_country)
 }
 
-function nt_init(wid, map_str)
+function nt_canvas_init(wid, map_str)
 {
-    yeConvert(wid, YHASH)
-
-    ywSetTurnLengthOverwrite(-1)
     yeCreateFunction(nt_action, wid, "action")
     yeCreateString("rgba: 255 255 255 255", wid, "background")
 
-    let ret = ywidNewWidget(wid, "canvas")
     const wid_rect = wid.get("wid-pix");
     const bg_size = ywSizeCreate(ywRectW(wid_rect), ywRectH(wid_rect))
 
@@ -475,7 +483,22 @@ function nt_init(wid, map_str)
 	}
     })
     reset_flags(wid)
+}
 
+function nt_init(wid, map_str)
+{
+    ywSetTurnLengthOverwrite(-1)
+    yeConvert(wid, YHASH)
+
+    let canvas = yeCreateHash()
+
+    canvas.setAt("<type>", "canvas")
+    yeCreateArray(wid, "entries")
+    wid.get("entries").push(canvas)
+    wid.setAt("cnt-type", "stack")
+    let ret = ywidNewWidget(wid, "container")
+    nt_container = wid
+    nt_canvas_init(canvas)
     return ret
 }
 
