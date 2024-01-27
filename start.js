@@ -36,10 +36,31 @@ let nt_container = null
 function squad_push(wid, squad)
 {
     const units = wid.get("units")
+    const items = wid.get("items")
+    const weapons = items.get("weapons")
+    const armors = items.get("armors")
     const nb_args = arguments.length
 
     for (let i = 2; i < nb_args; ++i) {
-	yeCreateCopy(units.get(arguments[i]), squad)
+	let guy = yeCreateCopy(units.get(arguments[i]), squad)
+	let w = null
+
+	if (i - 2 > 2) {
+	    w = weapons.get("bow")
+	} else {
+	    w = weapons.get("longsword")
+	}
+
+	guy.push(w, "weapon")
+	if (w.get("sprite_weapon")) {
+	    guy.push(w.get("sprite_weapon"), "sprite_weapon")
+	}
+	if (w.get("oversize_weapon")) {
+	    guy.push(w.get("oversize_weapon"), "oversize_weapon")
+	}
+
+	let a = armors.get("full leather")
+	guy.push(a, "armor")
     }
 }
 
