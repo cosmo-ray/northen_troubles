@@ -387,7 +387,31 @@ function nt_action(wid, eves)
 	wid.setAt("game_state", END_TURN_BATTLE)
 	return
     } else if (game_state == END_TURN_BATTLE) {
+	let all_squads = wid.get("squads")
+
 	print("end_turn_battle")
+	all_squads.forEach(function (squads, country) {
+	    let good = null
+	    let bad = null
+	    squads.forEach(function (s, i) {
+		if (good == null && s.gets("faction") == "good") {
+		    good = s
+		} else if (bad == null && s.gets("faction") == "bad"){
+		    bad = s
+		}
+	    })
+	    if (good && bad) {
+		print("FIGHT !")
+		let battle = yeCreateHash()
+		let units = yeCreateArray()
+
+		battle.setAt("<type>", "jrpg-auto")
+		units.push(good.get("guys"))
+		units.push(bad.get("guys"))
+		battle.setAt("units", units)
+		ywPushNewWidget(nt_container, battle)
+	    }
+	})
 	wid.setAt("game_state", END_TURN_REPORT)
 	return
     } else if (game_state == END_TURN_REPORT) {
@@ -417,6 +441,8 @@ function nt_canvas_init(wid, map_str)
     const bg_size = ywSizeCreate(ywRectW(wid_rect), ywRectH(wid_rect))
 
 
+    let items = ygFileToEnt(YJSON, "./items.json")
+    wid.setAt("items", items)
     let map = ygFileToEnt(YJSON, "./map.json")
     let units = ygFileToEnt(YJSON, "./units.json")
 
@@ -490,12 +516,8 @@ function nt_init(wid, map_str)
     ywSetTurnLengthOverwrite(-1)
     yeConvert(wid, YHASH)
 
-    let canvas = yeCreateHash()
-
-    canvas.setAt("<type>", "canvas")
-    yeCreateArray(wid, "entries")
-    wid.get("entries").push(canvas)
     wid.setAt("cnt-type", "stack")
+    let canvas = ywCntCreateChild(wid, "canvas")
     let ret = ywidNewWidget(wid, "container")
     nt_container = wid
     nt_canvas_init(canvas)
@@ -504,6 +526,7 @@ function nt_init(wid, map_str)
 
 function mod_init(mod)
 {
+    ygAddModule(Y_MOD_LOCAL, mod, "../auto-rpg")
     ygInitWidgetModule(mod, "northen-troubles", yeCreateFunction("nt_init"))
     return mod
 }
