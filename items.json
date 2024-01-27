@@ -28,7 +28,7 @@
 	    "heavy": 1,
 	    "protect": 3,
 	    "legs": "legs/armor/male/12.png",
-	    "tose": "torso/leather/chest_male.png",
+	    "torso": "torso/leather/chest_male.png",
 	    "head": "head/hoods/male/cloth_hood_male.png",
 	    "feet": "feet/boots/male/brown.png"
 	},

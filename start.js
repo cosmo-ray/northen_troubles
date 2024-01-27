@@ -61,6 +61,15 @@ function squad_push(wid, squad)
 
 	let a = armors.get("full leather")
 	guy.push(a, "armor")
+	let clothes = yeCreateArray(guy, "clothes")
+	if (a.get("legs"))
+	    clothes.push(a.get("legs"))
+	if (a.get("torso"))
+	    clothes.push(a.get("torso"))
+	if (a.get("head"))
+	    clothes.push(a.get("head"))
+	if (a.get("feet"))
+	    clothes.push(a.get("feet"))
     }
 }
 
