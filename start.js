@@ -345,6 +345,12 @@ function back(wid)
     to_buttons = []
 }
 
+function battle_end(wid)
+{
+    print("battle end")
+    ywCntPopLastEntry(nt_container)
+}
+
 function do_move(wid, to)
 {
     print("do move: ", to)
@@ -411,6 +417,7 @@ function nt_action(wid, eves)
 		    let r = yeMoveByEntity(squads, all_squads.get(s.gets("move_to")),
 					   s, yeGetKeyAt(squads, i))
 		}
+		s.rm("move_to")
 	    })
 	})
 	reset_flags(wid)
@@ -436,6 +443,8 @@ function nt_action(wid, eves)
 		let units = yeCreateArray()
 
 		battle.setAt("<type>", "jrpg-auto")
+		yeCreateFunction(battle_end, battle, "win")
+		yeCreateFunction(battle_end, battle, "lose")
 		units.push(good.get("guys"))
 		units.push(bad.get("guys"))
 		battle.setAt("units", units)
