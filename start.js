@@ -395,6 +395,15 @@ function sq_select(wid, s)
     selected_sq = s
     yePrint(s)
     let w_h = square_txt(wid, ux, 300, 85, "100 100 100", "Move")
+    let guys = s.get("guys")
+    let y_g = 40
+    let x_g = ywRectW(wid_pix) - 150
+    for (g of guys) {
+	let txt = g.gets("name") + "\n"
+	txt += "PV: " + g.geti("life") + " / " + g.geti("max_life")
+	square_txt(wid, ux, x_g, y_g, "100 100 100", txt)
+	y_g += 60
+    }
 
     main_buttons.push([[300, 85, w_h[0], w_h[1]], move_to])
 
@@ -553,6 +562,7 @@ function nt_canvas_init(wid, map_str)
 function nt_init(wid, map_str)
 {
     ywSetTurnLengthOverwrite(-1)
+    yePrint(wid)
     yeConvert(wid, YHASH)
 
     wid.setAt("cnt-type", "stack")
@@ -565,6 +575,7 @@ function nt_init(wid, map_str)
 
 function mod_init(mod)
 {
+    yeCreateQuadInt2(1024, 600, mod, "window size")
     ygAddModule(Y_MOD_LOCAL, mod, "../auto-rpg")
     ygInitWidgetModule(mod, "northen-troubles", yeCreateFunction("nt_init"))
     return mod
