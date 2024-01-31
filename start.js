@@ -347,7 +347,23 @@ function back(wid)
 
 function battle_end(wid)
 {
+    let good = nt_container.get("battle_good")
+    let bad = nt_container.get("battle_bad")
+    let squads = nt_container.get("battle_squads")
+    let good_lose = true
+
     print("battle end")
+    for (g in good) {
+	if (g.geti("life") > 0) {
+	    good_lose = false
+	    break
+	}
+    }
+    if (good_lose) {
+	squads.rm(good)
+    } else {
+	squads.rm(bad)
+    }
     ywCntPopLastEntry(nt_container)
 }
 
@@ -433,7 +449,10 @@ function nt_action(wid, eves)
 	wid.setAt("game_state", END_TURN_BATTLE)
 	return
     } else if (game_state == END_TURN_BATTLE) {
+	let have_lose = true
+	let have_wid = true
 	let all_squads = wid.get("squads")
+	let early_ret = false
 
 	print("end_turn_battle")
 	all_squads.forEach(function (squads, country) {
@@ -441,8 +460,10 @@ function nt_action(wid, eves)
 	    let bad = null
 	    squads.forEach(function (s, i) {
 		if (good == null && s.gets("faction") == "good") {
+		    have_lose = false
 		    good = s
 		} else if (bad == null && s.gets("faction") == "bad"){
+		    have_win = false
 		    bad = s
 		}
 	    })
@@ -450,6 +471,9 @@ function nt_action(wid, eves)
 		print("FIGHT !")
 		let battle = yeCreateHash()
 		let units = yeCreateArray()
+		nt_container.setAt("battle_good", good)
+		nt_container.setAt("battle_bad", bad)
+		nt_container.setAt("battle_squads", squads)
 
 		battle.setAt("<type>", "jrpg-auto")
 		yeCreateFunction(battle_end, battle, "win")
@@ -458,9 +482,18 @@ function nt_action(wid, eves)
 		units.push(bad.get("guys"))
 		battle.setAt("units", units)
 		ywPushNewWidget(nt_container, battle)
+		early_ret = true
+		return true
 	    }
 	})
+	if (early_ret)
+	    return
 	wid.setAt("game_state", END_TURN_REPORT)
+	reset_flags(wid)
+	if (have_win)
+	    ygCallFuncOrQuit(wid, "win");
+	else if (have_lose)
+	    ygCallFuncOrQuit(wid, "lose");
 	return
     } else if (game_state == END_TURN_REPORT) {
 	end_turn_report(wid)
