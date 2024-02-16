@@ -31,6 +31,8 @@ const END_TURN_MOVE = 1
 const END_TURN_BATTLE = 2
 const END_TURN_REPORT = 3
 
+const TURN_RESTORATION = 4
+
 let nt_container = null
 
 function squad_push(wid, squad)
@@ -140,29 +142,22 @@ function select_country(wid, eves)
 	check_button(wid, eves, main_buttons)
 	map.forEach(function(contry, i) {
 	    let poly = contry.get("where")
-	    let have_col_x = false
-	    let have_col_y = false
 
-	    if (ywPosX(mouse_pos) < ywPosX(poly.get(0)) ||
-		ywPosY(mouse_pos) < ywPosY(poly.get(0)))
+	    if (ywPosX(mouse_pos) < ywPosX(poly) ||
+		ywPosY(mouse_pos) < ywPosY(poly))
 		return;
 
-	    for (let j = 1; j < yeLen(poly); ++j) {
-		if (ywPosX(mouse_pos) < ywPosX(poly.get(j)))
-		    have_col_x = true
-		if (ywPosY(mouse_pos) < ywPosY(poly.get(j)))
-		    have_col_y = true
-	    }
-	    if (have_col_x && have_col_y) {
-		print("can col: ", yeGetKeyAt(map, i))
-		wid.setAt("can_col", ywCanvasNewPolygonExt(wid, poly, contry_colors[i], 1))
-		if (mouse_press) {
-		    wid.setAt("selected_country", i)
-		    wid.get("select_ux").forEach(function(c, i) {
-			ywCanvasRemoveObj(wid, c)
-		    })
-		    main_buttons = []
-		}
+	    if (ywPosX(mouse_pos) > ywPosX(poly) + ywRectW(poly) ||
+		ywPosY(mouse_pos) > ywPosY(poly) + ywRectH(poly))
+		return
+	    print("can col: ", yeGetKeyAt(map, i))
+	    wid.setAt("can_col", ywCanvasNewRectangleByRect(wid, poly, contry_colors[i], 1))
+	    if (mouse_press) {
+		wid.setAt("selected_country", i)
+		wid.get("select_ux").forEach(function(c, i) {
+		    ywCanvasRemoveObj(wid, c)
+		})
+		main_buttons = []
 	    }
 	})
     }
@@ -180,8 +175,8 @@ function reset_flags(wid)
     squads_per_state.forEach(function (squads, k) {
 	let flag_type = null
 	let state = states.get(k)
-	let x = state.get("where").get(0).geti(0)
-	let y = state.get("where").get(0).geti(1)
+	let x = state.get("where").geti(0)
+	let y = state.get("where").geti(1)
 
 	for (let j = 0; j < yeLen(squads); ++j) {
 	    let f_name = squads.get(j).gets("faction") + "_flag";
@@ -345,21 +340,22 @@ function back(wid)
     to_buttons = []
 }
 
+function is_squad_dead(squad)
+{
+    for (g of squad.get("guys")) {
+	if (g.geti("life") > 0) {
+	    return false;
+	}
+    }
+    return true;
+}
+
 function battle_end(wid)
 {
     let good = nt_container.get("battle_good")
     let bad = nt_container.get("battle_bad")
     let squads = nt_container.get("battle_squads")
-    let good_lose = true
-
-    print("battle end")
-    for (g in good) {
-	if (g.geti("life") > 0) {
-	    good_lose = false
-	    break
-	}
-    }
-    if (good_lose) {
+    if (is_squad_dead(good)) {
 	squads.rm(good)
     } else {
 	squads.rm(bad)
@@ -431,18 +427,38 @@ function nt_action(wid, eves)
 
     if (game_state == END_TURN_MOVE) {
 	let all_squads = wid.get("squads")
+	let wealth = wid.geti("wealth")
 
-	print("end_turn_move")
 	all_squads.forEach(function (squads, country) {
 	    squads.forEach(function (s, i) {
+		if (s.gets("faction") != "good")
+		    return;
 		if (s.gets("move_to")) {
 		    print("squads ", yeGetKeyAt(squads, i), " of ", country,
 			  " move to ", s.gets("move_to"))
 		    //yePushBack(all_squads.get(s.gets("move_to")), s)
 		    let r = yeMoveByEntity(squads, all_squads.get(s.gets("move_to")),
 					   s, yeGetKeyAt(squads, i))
+		} else {
+		    print("check wheal effect");
+		    for (g of s.get("guys")) {
+			let life = g.get("life")
+
+			if (wealth > 0) {
+			    if (life.i() < g.geti("max_life")) {
+				life.add(TURN_RESTORATION)
+			    }
+			} else if (wealth < -5) {
+			    life.add(-1)
+			}
+			life.boundary(0, g.geti("max_life"))
+		    }
+		    if (wealth < -5) {
+			if (is_squad_dead(s)) {
+			    squads.rm(s)
+			}
+		    }
 		}
-		s.rm("move_to")
 	    })
 	})
 	reset_flags(wid)
@@ -464,11 +480,12 @@ function nt_action(wid, eves)
 		    good = s
 		} else if (bad == null && s.gets("faction") == "bad"){
 		    have_win = false
+		    print("did not lose")
 		    bad = s
 		}
 	    })
 	    if (good && bad) {
-		print("FIGHT !")
+		print("FIGHT !", have_win, have_lose)
 		let battle = yeCreateHash()
 		let units = yeCreateArray()
 		nt_container.setAt("battle_good", good)
@@ -490,10 +507,14 @@ function nt_action(wid, eves)
 	    return
 	wid.setAt("game_state", END_TURN_REPORT)
 	reset_flags(wid)
-	if (have_win)
+	print("out fight : ", have_win, have_lose)
+	if (have_win) {
+	    print("norther tale win !")
 	    ygCallFuncOrQuit(wid, "win");
-	else if (have_lose)
+	} else if (have_lose) {
+	    print("norther tale lose !")
 	    ygCallFuncOrQuit(wid, "lose");
+	}
 	return
     } else if (game_state == END_TURN_REPORT) {
 	end_turn_report(wid)
@@ -545,7 +566,7 @@ function nt_canvas_init(wid, map_str)
 
     map.forEach(function (state, i) {
 	if (state.get("where")) {
-	    ywCanvasNewPolygonExt(wid, state.get("where"), contry_colors[i], 1)
+	    ywCanvasNewRectangleByRect(wid, state.get("where"), contry_colors[i], 1)
 	}
 	let sqs = yeCreateArray(squads, yeGetKeyAt(map, i))
 	let state_size = state.geti("size")
