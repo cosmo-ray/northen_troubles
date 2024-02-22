@@ -574,8 +574,13 @@ function nt_canvas_init(wid, map_str)
     let squads = yeCreateHash(wid, "squads")
 
     map.forEach(function (state, i) {
-	if (state.get("where")) {
+	let where = state.get("where")
+	if (where) {
 	    ywCanvasNewRectangleByRect(wid, state.get("where"), contry_colors[i], 1)
+	    let where_txt = yeCreateCopy(where)
+
+	    ywPosAddXY(where_txt, 10, 20)
+	    ywCanvasNewTextByStr(wid, where_txt.geti(0), where_txt.geti(1), yeGetKeyAt(map, i))
 	}
 	let sqs = yeCreateArray(squads, yeGetKeyAt(map, i))
 	let state_size = state.geti("size")
