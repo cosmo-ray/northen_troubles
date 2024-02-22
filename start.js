@@ -388,6 +388,15 @@ function move_to(wid)
 	to_buttons.push([[450, b_y, w_h[0], w_h[1]], do_move, [yeGetString(d)]])
 	b_y += 35
     })
+    map.forEach( function (c, i) {
+	if (i == selected_country.i())
+	    return;
+	for (dest of avaible_dest) {
+	    if (yeGetKeyAt(map, i) == dest.s())
+		return;
+	}
+	ux.push(ywCanvasNewRectangleByRect(wid, c.get("where"), "rgba: 60 60 60 120", 1))
+    })
 }
 
 function sq_select(wid, s)
