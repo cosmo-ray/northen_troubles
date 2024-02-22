@@ -179,9 +179,10 @@ function reset_flags(wid)
 	let y = state.get("where").geti(1)
 
 	for (let j = 0; j < yeLen(squads); ++j) {
+	    if (!squads.get(j))
+		continue;
 	    let f_name = squads.get(j).gets("faction") + "_flag";
 
-	    print(f_name)
 	    let f = ywCanvasNewImgFromTexture(wid, x, y, wid.get(f_name))
 	    all_flags.push(f)
 	    ywCanvasForceSize(f, flag_size)
