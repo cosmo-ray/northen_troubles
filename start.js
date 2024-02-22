@@ -615,7 +615,15 @@ function nt_canvas_init(wid, map_str)
 	    let guys = yeCreateArray(sq, "guys")
 
 	    sq.setAt("faction", "bad")
-	    squad_push(wid, guys, "bandit", "bandit", "bandit", "bandit")
+	    //squad_push(wid, guys, "bandit", "bandit");
+	    if (state_size == 0)
+		squad_push(wid, guys, "bandit", "bandit", "bandit");
+	    else if (state_size == 1)
+		squad_push(wid, guys, "bandit", "bandit", "bandit", "bandit");
+	    else if (state_size == 2)
+		squad_push(wid, guys, "bandit", "orc", "bandit", "bandit", "bandit");
+	    else
+		squad_push(wid, guys, "bandit", "orc", "bandit", "orc", "bandit", "orc");
 	}
 	if (i == 0) {
 	    let sq = new_squad(sqs, "squad Nb-1")
