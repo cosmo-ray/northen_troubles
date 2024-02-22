@@ -9,7 +9,7 @@
 	"type": "road",
 	"size": 0,
 	"to": ["southgate", "Hator South", "south field"],
-	"where": [ 400 , 350 , 190, 100]
+	"where": [ 400 , 350 , 190, 95]
     },
     "south field": {
 	"type": "field",
@@ -27,7 +27,7 @@
 	"type": "town",
 	"size": 1,
 	"to": ["Hator South"],
-	"where": [ 270 , 235, 70 , 60 ]
+	"where": [ 270 , 235, 70 , 55 ]
     },
     "Hator South": {
 	"type": "field",
