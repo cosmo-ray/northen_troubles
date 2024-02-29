@@ -35,6 +35,10 @@ const TURN_RESTORATION = 4
 
 let nt_container = null
 
+let good_squads_cnt = 1
+
+const NEW_UNIT_COST = 6
+
 function squad_push(wid, squad)
 {
     const units = wid.get("units")
@@ -221,6 +225,7 @@ function country_action(wid, eves, selected_country)
 {
     let map = wid.get("map")
     let wid_pix = yeGet(wid, "wid-pix");
+    let have_good_guys = false
 
     let country_ux = wid.get("country_ux")
     if (!country_ux) {
@@ -251,6 +256,7 @@ function country_action(wid, eves, selected_country)
 	    let w_h = square_txt(wid, country_ux, 10, s_y, color, name + " of " + size + move_to)
 	    if (faction == "good") {
 		main_buttons.push([[10, s_y, w_h[0], w_h[1]], sq_select, s])
+		have_good_guys = true
 	    }
 	    s_y += 35
 	})
@@ -258,6 +264,11 @@ function country_action(wid, eves, selected_country)
 	/* back */
 	let w_h = square_txt(wid, country_ux, ywRectW(wid_pix) - 70, 10, "120 140 130", "Back")
 	main_buttons.push([[ywRectW(wid_pix) - 70, 10, w_h[0], w_h[1]], back])
+	if (have_good_guys) {
+	    let w_h = square_txt(wid, country_ux, ywRectW(wid_pix) - 200, 10,
+				 "120 140 130", "Hire new Team")
+	    main_buttons.push([[ywRectW(wid_pix) - 200, 10, w_h[0], w_h[1]], hire])
+	}
     }
     check_button(wid, eves, main_buttons)
     check_button(wid, eves, to_buttons, true)
@@ -339,6 +350,29 @@ function back(wid)
     ywCanvasClearArray(wid, wid.get("country_ux"))
     wid.rm("country_ux")
     to_buttons = []
+}
+
+function hire(wid)
+{
+    let wealth = wid.get("wealth")
+
+    if (wealth.i() < 0) {
+	print("not enough money")
+	return
+    }
+    wealth.add(-NEW_UNIT_COST)
+    let selected_country = wid.get("selected_country")
+    let all_squads = wid.get("squads")
+    let map = wid.get('map')
+    let squads = all_squads.get(yeGetKeyAt(map, selected_country.i()))
+    ++good_squads_cnt
+    let sq = new_squad(squads, "squad Nb-" + good_squads_cnt)
+
+    sq.setAt("faction", "good")
+    let guys = yeCreateArray(sq, "guys")
+    squad_push(wid, guys, "guard", "guard", "guard", "guard", "guard", "guard")
+
+    back(wid)
 }
 
 function is_squad_dead(squad)
@@ -533,6 +567,7 @@ function nt_action(wid, eves)
     }
     let selected_country = wid.get("selected_country")
     let msg_ux = wid.get("msg_ux")
+    let move_to_ux = wid.get("move_to_ux")
 
     if (yeLen(msg_ux)) {
 	return check_button(wid, eves, main_buttons)
@@ -639,7 +674,6 @@ function nt_canvas_init(wid, map_str)
 function nt_init(wid, map_str)
 {
     ywSetTurnLengthOverwrite(-1)
-    yePrint(wid)
     yeConvert(wid, YHASH)
 
     wid.setAt("cnt-type", "stack")
