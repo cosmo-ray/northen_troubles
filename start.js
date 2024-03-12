@@ -519,6 +519,7 @@ function nt_action(wid, eves)
 	    let good = null
 	    let bad = null
 	    squads.forEach(function (s, i) {
+		s.rm("move_to")
 		if (good == null && s.gets("faction") == "good") {
 		    have_lose = false
 		    good = s
