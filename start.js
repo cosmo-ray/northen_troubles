@@ -54,7 +54,11 @@ function squad_push(wid, squad)
 	if (i - 2 > 2) {
 	    w = weapons.get("bow")
 	} else {
-	    w = weapons.get("longsword")
+	    if (yuiRand() & 1) {
+		w = weapons.get("iron longsword")
+	    } else {
+		w = weapons.get("iron spear")
+	    }
 	}
 
 	guy.push(w, "weapon")
@@ -141,9 +145,8 @@ function select_country(wid, eves)
     if (main_buttons.length == 0) {
 	let ux = yeTryCreateArray(wid, "select_ux")
 	let wid_pix = yeGet(wid, "wid-pix");
-	let w_h = square_txt(wid, ux, ywRectW(wid_pix) - 80, 10, "120 140 130", "End Turn")
-
-	main_buttons.push([[ywRectW(wid_pix) - 80, 10, w_h[0], w_h[1]], end_turn])
+	mk_button(wid, ux, main_buttons, "End Turn", ywRectW(wid_pix) - 80, 10,
+		  "120 140 130", end_turn)
 
 	square_txt(wid, ux, 10, 10, "120 140 130", "wealth: " + wid.geti("wealth"))
     }
@@ -165,7 +168,7 @@ function select_country(wid, eves)
 	    if (ywPosX(mouse_pos) > ywPosX(poly) + ywRectW(poly) ||
 		ywPosY(mouse_pos) > ywPosY(poly) + ywRectH(poly))
 		return
-	    print("can col: ", yeGetKeyAt(map, i))
+
 	    wid.setAt("can_col", ywCanvasNewRectangleByRect(wid, poly, contry_colors[i], 1))
 	    if (mouse_press) {
 		wid.setAt("selected_country", i)

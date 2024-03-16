@@ -1,7 +1,15 @@
 {
     "weapons": {
-	"longsword": {
+	"iron longsword": {
 	    "power": 3,
+	    "name": "longsword",
+	    "range": 0,
+	    "sprite_weapon": "oversize/right hand/male/longsword-universal.png",
+	    "oversize_weapon": "right hand/male/longsword-attack.png",
+	    "maniability": 2
+	},
+	"steel longsword": {
+	    "power": 5,
 	    "name": "longsword",
 	    "range": 0,
 	    "sprite_weapon": "oversize/right hand/male/longsword-universal.png",
@@ -15,8 +23,15 @@
 	    "sprite_weapon": "right hand/either/bow.png",
 	    "maniability": 4
 	},
-	"spear": {
+	"iron spear": {
 	    "power": 2,
+	    "range": 1,
+	    "name": "spear",
+	    "sprite_weapon": "both hand/spear.png",
+	    "maniability": 2
+	},
+	"steel spear": {
+	    "power": 3,
 	    "range": 1,
 	    "name": "spear",
 	    "sprite_weapon": "both hand/spear.png",
