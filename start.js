@@ -89,6 +89,14 @@ function new_squad(sqs, name)
 let main_buttons = []
 let to_buttons = []
 
+function mk_button(wid, ux_cnt, bt_cnt, txt, x, y, color, callback)
+{
+    let w_h = square_txt(wid, ux_cnt, x, y, color, txt)
+
+    bt_cnt.push([[x, y, w_h[0], w_h[1]], callback])
+    return w_h
+}
+
 function check_button(wid, eves, buttons, no_clean)
 {
     let mouse_pos = yevMousePos(eves)
@@ -262,12 +270,11 @@ function country_action(wid, eves, selected_country)
 	})
 
 	/* back */
-	let w_h = square_txt(wid, country_ux, ywRectW(wid_pix) - 70, 10, "120 140 130", "Back")
-	main_buttons.push([[ywRectW(wid_pix) - 70, 10, w_h[0], w_h[1]], back])
+	mk_button(wid, country_ux, main_buttons, "Back", ywRectW(wid_pix) - 70, 10,
+		  "120 140 130", back)
 	if (have_good_guys) {
-	    let w_h = square_txt(wid, country_ux, ywRectW(wid_pix) - 200, 10,
-				 "120 140 130", "Hire new Team")
-	    main_buttons.push([[ywRectW(wid_pix) - 200, 10, w_h[0], w_h[1]], hire])
+	    mk_button(wid, country_ux, main_buttons, "Hire new Team",
+		      ywRectW(wid_pix) - 200, 10, "120 140 130", hire)
 	}
     }
     check_button(wid, eves, main_buttons)
@@ -334,8 +341,7 @@ function end_turn_report(wid)
     turn_end_txt += "Wealth gain: " + added_wealth
     turn_end_txt += "\nTotal charge: " + charge
     let w_h = square_txt(wid, msg_ux, 150, 150, "100 100 100", turn_end_txt)
-    let w_h_b = square_txt(wid, msg_ux, 150, 150 + w_h[1] + 10, "100 100 100", "Ok")
-    main_buttons.push([[150, 150 + w_h[1] + 10, w_h_b[0], w_h_b[1]], back])
+    mk_button(wid, msg_ux, main_buttons, "Ok", 150, 150 + w_h[1] + 10, "100 100 100", back)
 }
 
 let selected_sq = null
