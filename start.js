@@ -89,11 +89,14 @@ function new_squad(sqs, name)
 let main_buttons = []
 let to_buttons = []
 
-function mk_button(wid, ux_cnt, bt_cnt, txt, x, y, color, callback)
+function mk_button(wid, ux_cnt, bt_cnt, txt, x, y, color, callback, arg)
 {
     let w_h = square_txt(wid, ux_cnt, x, y, color, txt)
 
-    bt_cnt.push([[x, y, w_h[0], w_h[1]], callback])
+    if (arg)
+	bt_cnt.push([[x, y, w_h[0], w_h[1]], callback, arg])
+    else
+	bt_cnt.push([[x, y, w_h[0], w_h[1]], callback])
     return w_h
 }
 
@@ -425,8 +428,8 @@ function move_to(wid)
     print("move to !!")
     yePrint(avaible_dest)
     avaible_dest.forEach(function (d, i) {
-	let w_h = square_txt(wid, ux, 450, b_y, "100 100 100", yeGetString(d))
-	to_buttons.push([[450, b_y, w_h[0], w_h[1]], do_move, [yeGetString(d)]])
+	let w_h = mk_button(wid, ux, to_buttons, yeGetString(d), 450, b_y, "100 100 100",
+			    do_move, [yeGetString(d)])
 	b_y += 35
     })
     map.forEach( function (c, i) {
