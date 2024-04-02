@@ -1,4 +1,20 @@
+//           DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+//                   Version 2, December 2004
+//
+// Copyright (C) 2024 Matthias Gatto <uso.cosmo.ray@gmail.com>
+//
+// Everyone is permitted to copy and distribute verbatim or modified
+// copies of this license document, and changing it is allowed as long
+// as the name is changed.
+//
+//            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+//   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+//
+//  0. You just DO WHAT THE FUCK YOU WANT TO.
+
 const NEW_UNIT_COST = 6
+
+let good_squads_cnt = 1
 
 function squad_push(wid, squad)
 {
@@ -72,4 +88,14 @@ function hire(wid)
     squad_push(wid, guys, "guard", "guard", "guard", "guard", "guard", "guard")
 
     back(wid)
+}
+
+function is_squad_dead(squad)
+{
+    for (g of squad.get("guys")) {
+	if (g.geti("life") > 0) {
+	    return false;
+	}
+    }
+    return true;
 }

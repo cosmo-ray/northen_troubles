@@ -12,6 +12,38 @@
 //
 //  0. You just DO WHAT THE FUCK YOU WANT TO.
 
+
+function square_txt(wid, container, x, y, color, txt, fixe_w, fixe_h)
+{
+    const split_txt = txt.split("\n")
+    let w = fixe_w
+    if (!fixe_w || fixe_w == undefined) {
+	w = 0
+	for (line of split_txt) {
+	    const tmp_w = line.length * ywidFontW() + 10
+	    if (tmp_w > w) {
+		w = tmp_w
+	    }
+	}
+    }
+    let h = fixe_h
+    if (!fixe_h || fixe_h == undefined) {
+	h = ywidFontH() * split_txt.length + 10
+    }
+    let txt_y_threshold = 2
+    if (h > 40)
+	txt_y_threshold = 10
+
+    yePushBack(container,
+	       ywCanvasNewRectangleExt(wid, x, y, w,
+				       h, "rgba: " + color + " 255", 2))
+    yePushBack(container,
+	       ywCanvasNewRectangleExt(wid, x, y, w,
+				       h, "rgba: " + color + " 100", 3))
+    yePushBack(container, ywCanvasNewTextByStr(wid, x + txt_y_threshold, y + 2, txt))
+    return [w, h]
+}
+
 function mk_button(wid, ux_cnt, bt_cnt, txt, x, y, color, callback, arg)
 {
     let w_h = square_txt(wid, ux_cnt, x, y, color, txt)
