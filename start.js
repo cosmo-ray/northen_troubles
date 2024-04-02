@@ -1,3 +1,16 @@
+//           DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+//                   Version 2, December 2004
+//
+// Copyright (C) 2024 Matthias Gatto <uso.cosmo.ray@gmail.com>
+//
+// Everyone is permitted to copy and distribute verbatim or modified
+// copies of this license document, and changing it is allowed as long
+// as the name is changed.
+//
+//            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+//   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+//
+//  0. You just DO WHAT THE FUCK YOU WANT TO.
 
 /* need info for all guys */
 /* need info for squads */
@@ -93,44 +106,6 @@ function new_squad(sqs, name)
 let main_buttons = []
 let to_buttons = []
 
-function mk_button(wid, ux_cnt, bt_cnt, txt, x, y, color, callback, arg)
-{
-    let w_h = square_txt(wid, ux_cnt, x, y, color, txt)
-
-    if (arg)
-	bt_cnt.push([[x, y, w_h[0], w_h[1]], callback, arg])
-    else
-	bt_cnt.push([[x, y, w_h[0], w_h[1]], callback])
-    return w_h
-}
-
-function check_button(wid, eves, buttons, no_clean)
-{
-    let mouse_pos = yevMousePos(eves)
-    let bt_highlight = yeTryCreateArray(wid, "bt_highlight")
-
-    if (mouse_pos)
-	if (!no_clean) {
-	    if (bt_highlight) {
-		ywCanvasClearArray(wid, bt_highlight)
-	    }
-	}
-    for (button of buttons) {
-	let r = ywRectCreateInts(button[0][0], button[0][1], button[0][2], button[0][3])
-
-	if (ywRectContainPos(r, mouse_pos, 1)) {
-	    if (yevAnyMouseDown(eves))
-		button[1](wid, button[2])
-	    else {
-		yePushBack(bt_highlight,
-			   ywCanvasNewRectangleExt(wid, button[0][0], button[0][1],
-						   button[0][2], button[0][3],
-						   "rgba: 120 140 130 100", 3))
-	    }
-	}
-    }
-}
-
 function select_country(wid, eves)
 {
     let mouse_pos = yevMousePos(eves)
@@ -210,17 +185,23 @@ function reset_flags(wid)
     })
 }
 
-function square_txt(wid, container, x, y, color, txt)
+function square_txt(wid, container, x, y, color, txt, fixe_w, fixe_h)
 {
     const split_txt = txt.split("\n")
-    let w = 0
-    for (line of split_txt) {
-	const tmp_w = line.length * ywidFontW() + 10
-	if (tmp_w > w) {
-	    w = tmp_w
+    let w = fixe_w
+    if (!fixe_w || fixe_w == undefined) {
+	w = 0
+	for (line of split_txt) {
+	    const tmp_w = line.length * ywidFontW() + 10
+	    if (tmp_w > w) {
+		w = tmp_w
+	    }
 	}
     }
-    const h = ywidFontH() * split_txt.length + 10
+    let h = fixe_h
+    if (!fixe_h || fixe_h == undefined) {
+	h = ywidFontH() * split_txt.length + 10
+    }
     let txt_y_threshold = 2
     if (h > 40)
 	txt_y_threshold = 10
@@ -250,7 +231,8 @@ function country_action(wid, eves, selected_country)
 	let squads = wid.get("squads").get(name)
 	square_txt(wid, country_ux, 10, 10, "20 40 230", name)
 
-	square_txt(wid, country_ux, 10, 50, "20 40 230", "Squades present in town:")
+	square_txt(wid, country_ux, 10, 50, "160 160 160", "Squades in town",
+		   200, 200)
 	let s_y = 85
 	squads.forEach(function (s, i) {
 	    let name = yeGetKeyAt(squads, i)
@@ -267,9 +249,9 @@ function country_action(wid, eves, selected_country)
 		move_to = " -> " + move_to
 	    else
 		move_to = ""
-	    let w_h = square_txt(wid, country_ux, 10, s_y, color, name + " of " + size + move_to)
+	    let w_h = square_txt(wid, country_ux, 20, s_y, color, name + " of " + size + move_to)
 	    if (faction == "good") {
-		main_buttons.push([[10, s_y, w_h[0], w_h[1]], sq_select, s])
+		main_buttons.push([[20, s_y, w_h[0], w_h[1]], sq_select, s])
 		have_good_guys = true
 	    }
 	    s_y += 35
@@ -446,6 +428,12 @@ function move_to(wid)
     })
 }
 
+function select_guy(wid, guy)
+{
+    print("guy select: ", guy)
+    yePrint(guy)
+}
+
 function sq_select(wid, s)
 {
     let wid_pix = yeGet(wid, "wid-pix");
@@ -463,17 +451,20 @@ function sq_select(wid, s)
     selected_sq = s
     yePrint(s)
     let w_h = square_txt(wid, ux, 300, 85, "100 100 100", "Move")
+    main_buttons.push([[300, 85, w_h[0], w_h[1]], move_to])
+
+    square_txt(wid, ux, ywRectW(wid_pix) - 160, 58, "150 150 150", "Guys in Squad", 150, 500)
     let guys = s.get("guys")
-    let y_g = 40
+    let y_g = 80
     let x_g = ywRectW(wid_pix) - 150
     for (g of guys) {
 	let txt = g.gets("name") + "\n"
 	txt += "PV: " + g.geti("life") + " / " + g.geti("max_life")
 	square_txt(wid, ux, x_g, y_g, "100 100 100", txt)
+	mk_button(wid, ux, main_buttons, txt, x_g, y_g, "100 100 100", select_guy, g)
 	y_g += 60
     }
 
-    main_buttons.push([[300, 85, w_h[0], w_h[1]], move_to])
 
 }
 
@@ -702,5 +693,7 @@ function mod_init(mod)
     yeCreateQuadInt2(1024, 600, mod, "window size")
     ygAddModule(Y_MOD_LOCAL, mod, "auto-rpg")
     ygInitWidgetModule(mod, "northen-troubles", yeCreateFunction("nt_init"))
+    ysLoadFile(ygGetManager("js"),
+	       "buttons.js");
     return mod
 }
