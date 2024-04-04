@@ -379,7 +379,7 @@ function nt_canvas_init(wid, map_str)
 	    sq.setAt("faction", "neutral")
 	    let guys = yeCreateArray(sq, "guys")
 	    squad_push(wid, guys, "guard")
-	    if (state_size == 2 || sate_size == 3) {
+	    if (state_size == 2 || state_size == 3) {
 		squad_push(wid, guys, "guard", "guard", "guard", "guard", "guard")
 	    } else if (state_size == 1) {
 		squad_push(wid, guys, "peasant", "peasant", "peasant", "guard", "peasant")
