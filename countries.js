@@ -63,7 +63,7 @@ function select_country(wid, eves)
     }
 }
 
-function reset_flags(wid)
+function reset_countries_flags(wid)
 {
     let all_flags = yeTryCreateArray(wid, "all_flags")
     let squads_per_state = yeGet(wid, "squads")

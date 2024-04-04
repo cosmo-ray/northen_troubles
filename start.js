@@ -257,7 +257,7 @@ function nt_action(wid, eves)
 		}
 	    })
 	})
-	reset_flags(wid)
+	reset_countries_flags(wid)
 	wid.setAt("game_state", END_TURN_BATTLE)
 	return
     } else if (game_state == END_TURN_BATTLE) {
@@ -303,7 +303,7 @@ function nt_action(wid, eves)
 	if (early_ret)
 	    return
 	wid.setAt("game_state", END_TURN_REPORT)
-	reset_flags(wid)
+	reset_countries_flags(wid)
 	print("out fight : ", have_win, have_lose)
 	if (have_win) {
 	    print("norther tale win !")
@@ -421,7 +421,7 @@ function nt_canvas_init(wid, map_str)
 	    squad_push(wid, guys, "guard", "guard", "guard", "guard", "guard", "guard")
 	}
     })
-    reset_flags(wid)
+    reset_countries_flags(wid)
 }
 
 function nt_init(wid, map_str)
