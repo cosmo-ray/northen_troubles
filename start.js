@@ -73,7 +73,7 @@ function end_turn_report(wid)
 	let faction_present = 0
 
 	print("GNU ? ", country_name)
-	country_squads.forEach(function (s, i) {
+	country_squads.forEachNonNull(function (s, i) {
 	    const faction = s.gets("faction")
 	    if (faction == "good")
 		faction_present = 1
@@ -270,7 +270,7 @@ function nt_action(wid, eves)
 	all_squads.forEach(function (squads, country) {
 	    let good = null
 	    let bad = null
-	    squads.forEach(function (s, i) {
+	    squads.forEachNonNull(function (s, i) {
 		s.rm("move_to")
 		if (good == null && s.gets("faction") == "good") {
 		    have_lose = false
