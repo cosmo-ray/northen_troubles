@@ -177,46 +177,6 @@ function move_to(wid)
     })
 }
 
-function select_guy(wid, guy)
-{
-    print("guy select: ", guy)
-    yePrint(guy)
-}
-
-function sq_select(wid, s)
-{
-    let wid_pix = yeGet(wid, "wid-pix");
-
-    let ux = wid.get("country_ux")
-
-    print("sq select !!", selected_sq)
-    if (selected_sq) {
-	main_buttons.pop()
-	/* 3 element par button */
-	ywCanvasArrayPop(wid, ux)
-	ywCanvasArrayPop(wid, ux)
-	ywCanvasArrayPop(wid, ux)
-    }
-    selected_sq = s
-    yePrint(s)
-    let w_h = square_txt(wid, ux, 300, 85, "100 100 100", "Move")
-    main_buttons.push([[300, 85, w_h[0], w_h[1]], move_to])
-
-    square_txt(wid, ux, ywRectW(wid_pix) - 160, 58, "150 150 150", "Guys in Squad", 150, 500)
-    let guys = s.get("guys")
-    let y_g = 80
-    let x_g = ywRectW(wid_pix) - 150
-    for (g of guys) {
-	let txt = g.gets("name") + "\n"
-	txt += "PV: " + g.geti("life") + " / " + g.geti("max_life")
-	square_txt(wid, ux, x_g, y_g, "100 100 100", txt)
-	mk_button(wid, ux, main_buttons, txt, x_g, y_g, "100 100 100", select_guy, g)
-	y_g += 60
-    }
-
-
-}
-
 function nt_action(wid, eves)
 {
     let game_state = wid.geti("game_state")

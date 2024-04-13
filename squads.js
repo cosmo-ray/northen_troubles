@@ -99,3 +99,55 @@ function is_squad_dead(squad)
     }
     return true;
 }
+
+function upgrade_guy_weapon(wid, guy)
+{
+    print("Upgrade Weapon !")
+}
+
+function select_guy(wid, guy)
+{
+    print("guy select: ", guy)
+    yePrint(guy.get("weapon"))
+    const weapon_name = guy.get("weapon").gets("name")
+    if (weapon_name == "iron longsword" || weapon_name == "iron spear") {
+	let ux = wid.get("country_ux")
+
+	print("can upgrade ", guy.gets("name"))
+	mk_button(wid, ux, main_buttons,
+		  "Upgrade " + guy.gets("name") + " " + weapon_name,
+		  150, 150, "100 100 100", upgrade_guy_weapon, guy)
+    }
+}
+
+function sq_select(wid, s)
+{
+    let wid_pix = yeGet(wid, "wid-pix");
+
+    let ux = wid.get("country_ux")
+
+    print("sq select !!", selected_sq)
+    if (selected_sq) {
+	main_buttons.pop()
+	/* 3 element par button */
+	ywCanvasArrayPop(wid, ux)
+	ywCanvasArrayPop(wid, ux)
+	ywCanvasArrayPop(wid, ux)
+    }
+    selected_sq = s
+    yePrint(s)
+    let w_h = square_txt(wid, ux, 300, 85, "100 100 100", "Move")
+    main_buttons.push([[300, 85, w_h[0], w_h[1]], move_to])
+
+    square_txt(wid, ux, ywRectW(wid_pix) - 160, 58, "150 150 150", "Guys in Squad", 150, 500)
+    let guys = s.get("guys")
+    let y_g = 80
+    let x_g = ywRectW(wid_pix) - 150
+    for (g of guys) {
+	let txt = g.gets("name") + "\n"
+	txt += "PV: " + g.geti("life") + " / " + g.geti("max_life")
+	square_txt(wid, ux, x_g, y_g, "100 100 100", txt)
+	mk_button(wid, ux, main_buttons, txt, x_g, y_g, "100 100 100", select_guy, g)
+	y_g += 60
+    }
+}
