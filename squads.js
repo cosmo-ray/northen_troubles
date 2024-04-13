@@ -27,16 +27,19 @@ function squad_push(wid, squad)
     for (let i = 2; i < nb_args; ++i) {
 	let guy = yeCreateCopy(units.get(arguments[i]), squad)
 	let w = null
+	let type = null
 
 	if (i - 2 > 2) {
-	    w = weapons.get("bow")
+	    type = "bow"
 	} else {
 	    if (yuiRand() & 1) {
-		w = weapons.get("iron longsword")
+		type = "iron longsword"
 	    } else {
-		w = weapons.get("iron spear")
+		type = "iron spear"
 	    }
 	}
+	w = weapons.get(type)
+	yeReCreateString(type, w, "name")
 
 	guy.push(w, "weapon")
 	if (w.get("sprite_weapon")) {
