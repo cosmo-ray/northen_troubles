@@ -48,7 +48,7 @@ function mk_button(wid, ux_cnt, bt_cnt, txt, x, y, color, callback, arg)
 {
     let w_h = square_txt(wid, ux_cnt, x, y, color, txt)
 
-    if (arg)
+    if (arg != undefined)
 	bt_cnt.push([[x, y, w_h[0], w_h[1]], callback, arg])
     else
 	bt_cnt.push([[x, y, w_h[0], w_h[1]], callback])
@@ -82,3 +82,26 @@ function check_button(wid, eves, buttons, no_clean)
     }
 }
 
+function ok_text(wid, txt, func, arg)
+{
+    let ok_ux = yeTryCreateArray(wid, "ok_ux")
+
+    // if not string assuming entity
+    print(func, arg)
+    if (typeof txt != "string") {
+	if (yeType(txt) == YSTRING) {
+	    txt = txt.s(txt)
+	} else {
+	    let new_txt = ""
+	    for (t of txt) {
+		if (new_txt != "")
+		    new_txt += "\n"
+		new_txt = new_txt + t.s()
+	    }
+	    txt = new_txt
+	}
+    }
+    let w_h = square_txt(wid, ok_ux, 150, 150, "100 100 100", txt)
+    mk_button(wid, ok_ux, main_buttons, "Ok", 150, 150 + w_h[1] + 10, "100 100 100",
+	      func, arg)
+}

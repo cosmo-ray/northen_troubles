@@ -103,8 +103,27 @@ function is_squad_dead(squad)
     return true;
 }
 
+const STEEL_UPGRADE_COST = 2
+
 function upgrade_guy_weapon(wid, guy)
 {
+    const weapon_name = guy.get("weapon").gets("name")
+    const items = wid.get("items")
+    const weapons = items.get("weapons")
+    let wealth = wid.get("wealth")
+
+    if (weapon_name == "iron longsword") {
+	w = weapons.get("steel longsword")
+	yeReCreateString("steel longsword", w, "name")
+	wealth.add(-STEEL_UPGRADE_COST)
+	guy.setAt("weapon", w)
+    } else if (weapon_name == "iron spear") {
+	w = weapons.get("steel spear")
+	yeReCreateString("steel spear", w, "name")
+	wealth.add(-STEEL_UPGRADE_COST)
+	guy.setAt("weapon", w)
+    }
+
     print("Upgrade Weapon !")
 }
 
@@ -112,6 +131,12 @@ function select_guy(wid, guy)
 {
     print("guy select: ", guy)
     yePrint(guy.get("weapon"))
+    let wealth = wid.get("wealth")
+
+    if (wealth.i() < 0) {
+	print("not enough money to upgrade stuff")
+	return
+    }
     const weapon_name = guy.get("weapon").gets("name")
     if (weapon_name == "iron longsword" || weapon_name == "iron spear") {
 	let ux = wid.get("country_ux")

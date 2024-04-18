@@ -43,8 +43,10 @@ const WAIT_ACTION = 0
 const END_TURN_MOVE = 1
 const END_TURN_BATTLE = 2
 const END_TURN_REPORT = 3
+const STORY_STATE = 4
+const WAIT_BUTTON_IN = 5
 
-const TURN_RESTORATION = 4
+const TURN_HP_RESTORATION = 4
 
 let nt_container = null
 
@@ -126,6 +128,13 @@ function back(wid)
     ywCanvasClearArray(wid, wid.get("country_ux"))
     wid.rm("country_ux")
     to_buttons = []
+    ywCanvasClearArray(wid, wid.get("ok_ux"))
+}
+
+function back_to_state(wid, next_state)
+{
+    wid.setAt('game_state', next_state)
+    back(wid)
 }
 
 function battle_end(wid)
@@ -181,7 +190,22 @@ function nt_action(wid, eves)
 {
     let game_state = wid.geti("game_state")
 
-    if (game_state == END_TURN_MOVE) {
+    if (game_state == STORY_STATE) {
+	print("game_stat")
+	let cur_story = wid.gets("cur_story")
+	let story = wid.get("stories").get(cur_story)
+
+	if (story == undefined) {
+	    print("can find story: ", cur_story)
+	    wid.setAt("game_state", WAIT_ACTION)
+	}
+	ok_text(wid, story, back_to_state, WAIT_ACTION)
+	wid.setAt("game_state", WAIT_BUTTON_IN)
+	return
+    } else if (game_state == WAIT_BUTTON_IN) {
+	check_button(wid, eves, main_buttons)
+	return
+    } else if (game_state == END_TURN_MOVE) {
 	let all_squads = wid.get("squads")
 	let wealth = wid.geti("wealth")
 
@@ -202,7 +226,7 @@ function nt_action(wid, eves)
 
 			if (wealth > 0) {
 			    if (life.i() < g.geti("max_life")) {
-				life.add(TURN_RESTORATION)
+				life.add(TURN_HP_RESTORATION)
 			    }
 			} else if (wealth < -5) {
 			    life.add(-1)
@@ -305,6 +329,7 @@ function nt_canvas_init(wid, map_str)
     wid.setAt("items", items)
     let map = ygFileToEnt(YJSON, "./map.json")
     let units = ygFileToEnt(YJSON, "./units.json")
+    let stories = ygFileToEnt(YJSON, "./stories.json")
 
     let rect_texture = ywRectCreateInts(0, 0, 32, 32)
     ywTextureNewImg("flag_captured.png", rect_texture, wid, "neutral_flag")
@@ -317,9 +342,11 @@ function nt_canvas_init(wid, map_str)
     ywCanvasForceSize(wid.get("imgbg"), bg_size)
 
     wid.setAt("wealth", 0)
-    wid.setAt("game_state", WAIT_ACTION)
+    wid.setAt("game_state", STORY_STATE)
+    wid.setAt("cur_story", "begin")
     yePush(wid, map, "map")
     yePush(wid, units, "units")
+    yePush(wid, stories, "stories")
     let squads = yeCreateHash(wid, "squads")
 
     map.forEach(function (state, i) {
