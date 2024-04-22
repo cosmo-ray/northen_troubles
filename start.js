@@ -112,8 +112,7 @@ function end_turn_report(wid)
     turn_end_txt = "Turn end report:\n"
     turn_end_txt += "Wealth gain: " + added_wealth
     turn_end_txt += "\nTotal charge: " + charge
-    let w_h = square_txt(wid, msg_ux, 150, 150, "100 100 100", turn_end_txt)
-    mk_button(wid, msg_ux, main_buttons, "Ok", 150, 150 + w_h[1] + 10, "100 100 100", back)
+    ok_text(wid, turn_end_txt, back)
 }
 
 let selected_sq = null
