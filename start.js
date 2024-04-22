@@ -428,6 +428,7 @@ function mod_init(mod)
     yeCreateQuadInt2(1024, 600, mod, "window size")
     ygAddModule(Y_MOD_LOCAL, mod, "auto-rpg")
     ygInitWidgetModule(mod, "northen-troubles", yeCreateFunction("nt_init"))
+    ysLoadFile(ygGetManager("js"), "arrow.js");
     ysLoadFile(ygGetManager("js"), "buttons.js");
     ysLoadFile(ygGetManager("js"), "squads.js");
     ysLoadFile(ygGetManager("js"), "countries.js");
