@@ -130,7 +130,6 @@ function upgrade_guy_weapon(wid, guy)
 function select_guy(wid, guy)
 {
     print("guy select: ", guy)
-    yePrint(guy.get("weapon"))
     let wealth = wid.get("wealth")
 
     if (wealth.i() < 0) {
@@ -163,7 +162,6 @@ function sq_select(wid, s)
 	ywCanvasArrayPop(wid, ux)
     }
     selected_sq = s
-    yePrint(s)
     let w_h = square_txt(wid, ux, 300, 85, "100 100 100", "Move")
     main_buttons.push([[300, 85, w_h[0], w_h[1]], move_to])
 

@@ -1,8 +1,21 @@
+//           DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+//                   Version 2, December 2004
+//
+// Copyright (C) 2024 Matthias Gatto <uso.cosmo.ray@gmail.com>
+//
+// Everyone is permitted to copy and distribute verbatim or modified
+// copies of this license document, and changing it is allowed as long
+// as the name is changed.
+//
+//            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+//   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+//
+//  0. You just DO WHAT THE FUCK YOU WANT TO.
 
-function draw_arrow(wid, x0, y0, x1, y1, color)
+function draw_arrow(wid, cnt, x0, y0, x1, y1, color)
 {
     print("draw arrow\n");
-    ywCanvasNewLine(wid, x0, y0, x1, y1, color);
+    cnt.push(ywCanvasNewLine(wid, x0, y0, x1, y1, color));
 
     /* chat gpt did the algorytm */
     var arrowSize = 10; // Size of the arrowhead
@@ -15,10 +28,10 @@ function draw_arrow(wid, x0, y0, x1, y1, color)
     var unitY = dy / magnitude;
 
     // Draw the arrowhead
-    ywCanvasNewLine(wid, x1, y1,
-		    x1 - arrowSize * unitX - arrowSize * unitY,
-		    y1 - arrowSize * unitY + arrowSize * unitX, color);
-    ywCanvasNewLine(wid, x1, y1,
-		    x1 - arrowSize * unitX + arrowSize * unitY,
-		    y1 - arrowSize * unitY - arrowSize * unitX, color);
+    cnt.push(ywCanvasNewLine(wid, x1, y1,
+			     x1 - arrowSize * unitX - arrowSize * unitY,
+			     y1 - arrowSize * unitY + arrowSize * unitX, color));
+    cnt.push(ywCanvasNewLine(wid, x1, y1,
+			     x1 - arrowSize * unitX + arrowSize * unitY,
+			     y1 - arrowSize * unitY - arrowSize * unitX, color));
 }

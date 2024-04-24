@@ -55,6 +55,9 @@ let to_buttons = []
 
 function end_turn(wid)
 {
+    print("end turn")
+    yePrint(wid.get("arrow_array"))
+    ywCanvasClearArray(wid, wid.get("arrow_array"))
     wid.setAt("game_state", END_TURN_MOVE)
 }
 
@@ -115,8 +118,6 @@ function end_turn_report(wid)
     ok_text(wid, turn_end_txt, back)
 }
 
-let selected_sq = null
-
 function back(wid)
 {
     main_buttons = []
@@ -149,10 +150,26 @@ function battle_end(wid)
     ywCntPopLastEntry(nt_container)
 }
 
+let selected_sq = null
+
 function do_move(wid, to)
 {
-    print("do move: ", to)
-    yePrint(selected_sq)
+    let map = wid.get("map")
+    let to_info = map.get(to[0])
+    print("do move")
+    yePrint(to_info.get("where"))
+    const where = to_info.get("where")
+    const selected_country = wid.get("selected_country")
+    print("selected_country:")
+    const from_where = map.get(selected_country.i()).get("where")
+    yePrint(from_where)
+    //yePrint(selected_sq)
+    draw_arrow(wid, wid.get("arrow_array"),
+	       from_where.geti(0) + from_where.geti(2) / 2,
+	       from_where.geti(1) + from_where.geti(3) / 3,
+	       where.geti(0) + where.geti(2) / 2,
+	       where.geti(1) + where.geti(3) / 3,
+	       "rgba: 20 20 20 255")
     yeCreateString(to, selected_sq, "move_to")
     yePrint(selected_sq)
     back(wid)
@@ -167,8 +184,6 @@ function move_to(wid)
     let ux = yeTryCreateArray(wid, "move_to_ux")
     let b_y = 85
 
-    print("move to !!")
-    yePrint(avaible_dest)
     avaible_dest.forEach(function (d, i) {
 	let w_h = mk_button(wid, ux, to_buttons, yeGetString(d), 450, b_y, "100 100 100",
 			    do_move, [yeGetString(d)])
@@ -213,8 +228,8 @@ function nt_action(wid, eves)
 		if (s.gets("faction") != "good")
 		    return;
 		if (s.gets("move_to")) {
-		    print("squads ", yeGetKeyAt(squads, i), " of ", country,
-			  " move to ", s.gets("move_to"))
+		    //print("squads ", yeGetKeyAt(squads, i), " of ", country,
+		    //" move to ", s.gets("move_to"))
 		    //yePushBack(all_squads.get(s.gets("move_to")), s)
 		    let r = yeMoveByEntity(squads, all_squads.get(s.gets("move_to")),
 					   s, yeGetKeyAt(squads, i))
@@ -340,6 +355,7 @@ function nt_canvas_init(wid, map_str)
     wid.setAt("imgbg", ywCanvasNewImgByPath(wid, 0, 0, "./map.png"));
     ywCanvasForceSize(wid.get("imgbg"), bg_size)
 
+    yeCreateArray(wid, "arrow_array")
     wid.setAt("wealth", 0)
     wid.setAt("game_state", STORY_STATE)
     wid.setAt("cur_story", "begin")
