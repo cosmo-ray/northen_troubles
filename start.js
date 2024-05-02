@@ -96,8 +96,8 @@ function end_turn_report(wid)
 	}
 
     })
-    all_squads.forEach(function (squads, country) {
-	squads.forEach(function (s, i) {
+    all_squads.forEachNonNull(function (squads, country) {
+	squads.forEachNonNull(function (s, i) {
 	    if (s.gets("faction") == "good") {
 		charge += 6
 	    }
