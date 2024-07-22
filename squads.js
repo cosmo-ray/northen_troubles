@@ -105,8 +105,10 @@ function is_squad_dead(squad)
 
 const STEEL_UPGRADE_COST = 2
 
-function upgrade_guy_weapon(wid, guy)
+function upgrade_guy_weapon(wid, args)
 {
+    let guy = args[0]
+    let txt = args[1]
     const weapon_name = guy.get("weapon").gets("name")
     const items = wid.get("items")
     const weapons = items.get("weapons")
@@ -124,6 +126,10 @@ function upgrade_guy_weapon(wid, guy)
 	guy.setAt("weapon", w)
     }
 
+    let ux = wid.get("country_ux")
+    yePrint(ux)
+    main_buttons.splice(main_buttons.indexOf(upgrade_guy_weapon))
+    ux_rm(wid, ux, txt)
     print("Upgrade Weapon !")
 }
 
@@ -141,9 +147,9 @@ function select_guy(wid, guy)
 	let ux = wid.get("country_ux")
 
 	print("can upgrade ", guy.gets("name"))
-	mk_button(wid, ux, main_buttons,
-		  "Upgrade " + guy.gets("name") + " " + weapon_name,
-		  150, 150, "100 100 100", upgrade_guy_weapon, guy)
+	const txt = "Upgrade " + guy.gets("name") + " " + weapon_name
+	mk_button(wid, ux, main_buttons, txt,
+		  150, 250, "100 100 100", upgrade_guy_weapon, [guy, txt])
     }
 }
 
@@ -162,18 +168,24 @@ function sq_select(wid, s)
 	ywCanvasArrayPop(wid, ux)
     }
     selected_sq = s
-    let w_h = square_txt(wid, ux, 300, 85, "100 100 100", "Move")
-    main_buttons.push([[300, 85, w_h[0], w_h[1]], move_to])
+    mk_button(wid, ux, main_buttons, "Move", 150, ywRectH(wid_pix) - 80,
+	      "100 100 100", move_to)
 
-    square_txt(wid, ux, ywRectW(wid_pix) - 160, 58, "150 150 150", "Guys in Squad", 150, 500)
+    square_txt(wid, ux, 90, 58, "50 50 50", "Squad", ywRectW(wid_pix) - 160, 500)
     let guys = s.get("guys")
-    let y_g = 80
-    let x_g = ywRectW(wid_pix) - 150
+    let y_g = 90
+    let x_g =  110
+    let i = 0
     for (g of guys) {
 	let txt = g.gets("name") + "\n"
 	txt += "PV: " + g.geti("life") + " / " + g.geti("max_life")
 	square_txt(wid, ux, x_g, y_g, "100 100 100", txt)
 	mk_button(wid, ux, main_buttons, txt, x_g, y_g, "100 100 100", select_guy, g)
-	y_g += 60
+	x_g += 300
+	++i
+	if (i == 3) {
+	    x_g = 110
+	    y_g = 160
+	}
     }
 }

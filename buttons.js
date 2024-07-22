@@ -13,6 +13,29 @@
 //  0. You just DO WHAT THE FUCK YOU WANT TO.
 
 
+function ux_rm(wid, container, in_txt)
+{
+    let idx_target = -1;
+    let idx = 0;
+
+    for (c of container) {
+	const txt = yeGet(c, 2)
+	if (yeGetString(txt) == in_txt) {
+	    idx_target = idx;
+	}
+	++idx;
+    }
+
+    if (idx_target > 0) {
+	ywCanvasRemoveObj(wid, container.get(idx_target))
+	ywCanvasRemoveObj(wid, container.get(idx_target - 1))
+	ywCanvasRemoveObj(wid, container.get(idx_target - 2))
+	container.rm(idx_target)
+	container.rm(idx_target - 1)
+	container.rm(idx_target - 2)
+    }
+}
+
 function square_txt(wid, container, x, y, color, txt, fixe_w, fixe_h)
 {
     const split_txt = txt.split("\n")
@@ -31,7 +54,9 @@ function square_txt(wid, container, x, y, color, txt, fixe_w, fixe_h)
 	h = ywidFontH() * split_txt.length + 10
     }
     let txt_y_threshold = 2
-    if (h > 40)
+    if (h > 300)
+	txt_y_threshold = 80
+    else if (h > 40)
 	txt_y_threshold = 10
 
     yePushBack(container,
