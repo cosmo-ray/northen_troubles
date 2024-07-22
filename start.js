@@ -175,31 +175,6 @@ function do_move(wid, to)
     back(wid)
 }
 
-function move_to(wid)
-{
-    let map = wid.get("map")
-    let selected_country = wid.get("selected_country")
-    let country = map.get(selected_country.i())
-    let avaible_dest = country.get("to")
-    let ux = yeTryCreateArray(wid, "move_to_ux")
-    let b_y = 85
-
-    avaible_dest.forEach(function (d, i) {
-	let w_h = mk_button(wid, ux, to_buttons, yeGetString(d), 450, b_y, "100 100 100",
-			    do_move, [yeGetString(d)])
-	b_y += 35
-    })
-    map.forEach( function (c, i) {
-	if (i == selected_country.i())
-	    return;
-	for (dest of avaible_dest) {
-	    if (yeGetKeyAt(map, i) == dest.s())
-		return;
-	}
-	ux.push(ywCanvasNewRectangleByRect(wid, c.get("where"), "rgba: 60 60 60 120", 1))
-    })
-}
-
 function nt_action(wid, eves)
 {
     let game_state = wid.geti("game_state")

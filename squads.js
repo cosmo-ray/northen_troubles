@@ -16,6 +16,31 @@ const NEW_UNIT_COST = 6
 
 let good_squads_cnt = 1
 
+function move_to(wid)
+{
+    let map = wid.get("map")
+    let selected_country = wid.get("selected_country")
+    let country = map.get(selected_country.i())
+    let avaible_dest = country.get("to")
+    let ux = yeTryCreateArray(wid, "move_to_ux")
+    let b_y = 250
+
+    avaible_dest.forEach(function (d, i) {
+	let w_h = mk_button(wid, ux, to_buttons, yeGetString(d), 450, b_y, "100 100 100",
+			    do_move, [yeGetString(d)])
+	b_y += 35
+    })
+    map.forEach( function (c, i) {
+	if (i == selected_country.i())
+	    return;
+	for (dest of avaible_dest) {
+	    if (yeGetKeyAt(map, i) == dest.s())
+		return;
+	}
+	ux.push(ywCanvasNewRectangleByRect(wid, c.get("where"), "rgba: 60 60 60 120", 1))
+    })
+}
+
 function squad_push(wid, squad)
 {
     const units = wid.get("units")
@@ -169,7 +194,7 @@ function sq_select(wid, s)
     }
     selected_sq = s
     mk_button(wid, ux, main_buttons, "Move", 150, ywRectH(wid_pix) - 80,
-	      "100 100 100", move_to)
+	      "100 200 100", move_to)
 
     square_txt(wid, ux, 90, 58, "50 50 50", "Squad", ywRectW(wid_pix) - 160, 500)
     let guys = s.get("guys")
