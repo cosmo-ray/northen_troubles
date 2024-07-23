@@ -196,7 +196,7 @@ function sq_select(wid, s)
     mk_button(wid, ux, main_buttons, "Move", 150, ywRectH(wid_pix) - 80,
 	      "100 200 100", move_to)
 
-    square_txt(wid, ux, 90, 58, "50 50 50", "Squad", ywRectW(wid_pix) - 160, 500)
+    square_txt(wid, ux, 90, 58, "50 50 50 200", "Squad", ywRectW(wid_pix) - 160, 500)
     let guys = s.get("guys")
     let y_g = 90
     let x_g =  110

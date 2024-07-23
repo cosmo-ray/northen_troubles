@@ -38,6 +38,14 @@ function ux_rm(wid, container, in_txt)
 
 function square_txt(wid, container, x, y, color, txt, fixe_w, fixe_h)
 {
+    const colors = color.split(' ')
+    let alpha = colors[3]
+
+    if (alpha) {
+	color = colors[0] + ' ' + colors[1] + ' ' + colors[2]
+    } else {
+	alpha = "100"
+    }
     const split_txt = txt.split("\n")
     let w = fixe_w
     if (!fixe_w || fixe_w == undefined) {
@@ -64,7 +72,7 @@ function square_txt(wid, container, x, y, color, txt, fixe_w, fixe_h)
 				       h, "rgba: " + color + " 255", 2))
     yePushBack(container,
 	       ywCanvasNewRectangleExt(wid, x, y, w,
-				       h, "rgba: " + color + " 100", 3))
+				       h, "rgba: " + color + " " + alpha, 3))
     yePushBack(container, ywCanvasNewTextByStr(wid, x + txt_y_threshold, y + 2, txt))
     return [w, h]
 }
