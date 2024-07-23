@@ -23,10 +23,10 @@ function move_to(wid)
     let country = map.get(selected_country.i())
     let avaible_dest = country.get("to")
     let ux = yeTryCreateArray(wid, "move_to_ux")
-    let b_y = 250
+    let b_y = 450
 
     avaible_dest.forEach(function (d, i) {
-	let w_h = mk_button(wid, ux, to_buttons, yeGetString(d), 450, b_y, "100 100 100",
+	let w_h = mk_button(wid, ux, to_buttons, yeGetString(d), 250, b_y, "100 100 100",
 			    do_move, [yeGetString(d)])
 	b_y += 35
     })
@@ -152,7 +152,6 @@ function upgrade_guy_weapon(wid, args)
     }
 
     let ux = wid.get("country_ux")
-    yePrint(ux)
     main_buttons.splice(main_buttons.indexOf(upgrade_guy_weapon))
     ux_rm(wid, ux, txt)
     print("Upgrade Weapon !")
@@ -193,10 +192,11 @@ function sq_select(wid, s)
 	ywCanvasArrayPop(wid, ux)
     }
     selected_sq = s
+
+    square_txt(wid, ux, 90, 58, "150 150 150 180", "Squad", ywRectW(wid_pix) - 160, 500)
+
     mk_button(wid, ux, main_buttons, "Move", 150, ywRectH(wid_pix) - 80,
 	      "100 200 100", move_to)
-
-    square_txt(wid, ux, 90, 58, "50 50 50 200", "Squad", ywRectW(wid_pix) - 160, 500)
     let guys = s.get("guys")
     let y_g = 90
     let x_g =  110

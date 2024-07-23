@@ -120,7 +120,6 @@ function ok_text(wid, txt, func, arg)
     let ok_ux = yeTryCreateArray(wid, "ok_ux")
 
     // if not string assuming entity
-    print(func, arg)
     if (typeof txt != "string") {
 	if (yeType(txt) == YSTRING) {
 	    txt = txt.s(txt)
