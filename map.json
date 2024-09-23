@@ -3,45 +3,35 @@
 	"type": "town",
 	"size": 2,
 	"to": ["southgate north", "south field"],
-	"where": [ 440 , 470 , 90, 70]
+	"where": [ 230 , 400 , 220 , 150 ]
     },
     "southgate north": {
 	"type": "road",
 	"size": 0,
 	"to": ["southgate", "Hator South", "south field"],
-	"where": [ 400 , 350 , 190, 95]
+	"where": [ 270 , 260 , 170, 100]
     },
     "south field": {
 	"type": "field",
 	"size": 1,
 	"to": ["east field", "southgate"],
-	"where": [ 290 , 450 , 150 , 90 ]
+	"where": [ 170 , 120 , 350 , 140 ]
     },
     "east field": {
 	"type": "field",
 	"to": ["south field", "Hator South"],
 	"size": 2,
-	"where": [ 11 , 330, 230 , 260 ]
+	"where": [ 70 , 320, 150 , 200 ]
     },
     "Hator": {
 	"type": "town",
 	"size": 1,
 	"to": ["Hator South"],
-	"where": [ 270 , 235, 70 , 55 ]
-    },
-    "Hator South": {
-	"type": "field",
-	"size": 3,
-	"where": [ 260 , 295, 130, 70]
-    },
-    "eastgate": {
-	"type": "town",
-	"size": 3,
-	"where": [ 810 , 105 , 100, 130 ]
+	"where": [ 300 , 20, 100 , 100 ]
     },
     "furgate": {
 	"type": "town",
 	"size": 2,
-	"where": [  579 , 205 , 120, 100]
+	"where": [  450 , 280 , 190, 130]
     }
 }

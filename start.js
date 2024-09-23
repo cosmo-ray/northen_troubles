@@ -305,7 +305,7 @@ function nt_action(wid, eves)
     return country_action(wid, eves, selected_country)
 }
 
-function nt_canvas_init(wid, map_str)
+function nt_canvas_init(wid, map_img)
 {
     yeCreateFunction(nt_action, wid, "action")
     yeCreateString("rgba: 255 255 255 255", wid, "background")
@@ -327,7 +327,16 @@ function nt_canvas_init(wid, map_str)
     rect_texture = ywRectCreateInts(0, 16, 16, 16)
     ywTextureNewImg("flags.png", rect_texture, wid, "bad_flag")
 
-    wid.setAt("imgbg", ywCanvasNewImgByPath(wid, 0, 0, "./map.png"));
+    print("map-img: ", wid.gets("map-img"))
+    let map_src = null
+    let map_str = null
+    if (yeType(map_img) != YSTRING) {
+	map_src = map_img.get(1)
+	map_str = map_img.gets(0)
+    } else {
+	map_str = map_img.s()
+    }
+    wid.setAt("imgbg", ywCanvasNewImg(wid, 0, 0, map_str, map_src));
     ywCanvasForceSize(wid.get("imgbg"), bg_size)
 
     yeCreateArray(wid, "arrow_array")
@@ -401,7 +410,7 @@ function nt_canvas_init(wid, map_str)
     reset_countries_flags(wid)
 }
 
-function nt_init(wid, map_str)
+function nt_init(wid)
 {
     ywSetTurnLengthOverwrite(-1)
     yeConvert(wid, YHASH)
@@ -410,7 +419,7 @@ function nt_init(wid, map_str)
     let canvas = ywCntCreateChild(wid, "canvas")
     let ret = ywidNewWidget(wid, "container")
     nt_container = wid
-    nt_canvas_init(canvas)
+    nt_canvas_init(canvas, wid.get("map-img"))
     return ret
 }
 
@@ -418,7 +427,12 @@ function mod_init(mod)
 {
     yeCreateQuadInt2(1024, 600, mod, "window size")
     ygAddModule(Y_MOD_LOCAL, mod, "auto-rpg")
-    ygInitWidgetModule(mod, "northen-troubles", yeCreateFunction("nt_init"))
+    let test_wid = ygInitWidgetModule(mod, "northen-troubles", yeCreateFunction("nt_init"))
+    let map_img = yeCreateArray(test_wid, "map-img")
+    map_img.setAt(0, "./northern_isle.png")
+    ywRectCreateInts(1900, 1860, 1900, 2300, map_img)
+    //test_wid.setAt("map-img", "./northern_isle.png")
+    yePrint(test_wid)
     ysLoadFile(ygGetManager("js"), "arrow.js");
     ysLoadFile(ygGetManager("js"), "buttons.js");
     ysLoadFile(ygGetManager("js"), "squads.js");
