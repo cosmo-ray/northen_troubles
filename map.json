@@ -1,6 +1,7 @@
 {
     "southgate": {
 	"type": "town",
+	"no_name": true,
 	"size": 2,
 	"to": ["southgate north", "south field"],
 	"where": [ 230 , 400 , 220 , 150 ]
@@ -13,24 +14,30 @@
     },
     "south field": {
 	"type": "field",
+	"no_name": true,
 	"size": 1,
-	"to": ["east field", "southgate"],
+	"to": ["deepmarsh", "southgate"],
 	"where": [ 170 , 120 , 350 , 140 ]
     },
-    "east field": {
+    "deepmarsh": {
 	"type": "field",
+	"no_name": true,
 	"to": ["south field", "Hator South"],
 	"size": 2,
+	"img": ["northern_isle-deepmarsh.png", [1900, 1860, 1900, 2300]],
+	"over-background": true,
 	"where": [ 70 , 320, 150 , 200 ]
     },
     "Hator": {
 	"type": "town",
+	"no_name": true,
 	"size": 1,
 	"to": ["Hator South"],
 	"where": [ 300 , 20, 100 , 100 ]
     },
     "furgate": {
 	"type": "town",
+	"no_name": true,
 	"size": 2,
 	"where": [  450 , 280 , 190, 130]
     }

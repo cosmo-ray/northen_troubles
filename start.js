@@ -351,11 +351,38 @@ function nt_canvas_init(wid, map_img)
     map.forEach(function (state, i) {
 	let where = state.get("where")
 	if (where) {
-	    ywCanvasNewRectangleByRect(wid, state.get("where"), contry_colors[i], 1)
+	    let img = state.get("img")
+	    if (img) {
+		let src = null
+		let x = where.geti(0), y = where.geti(1)
+
+		if (yeType(map_img) != YSTRING) {
+		    src = img.get(1)
+		    img = img.get(0)
+		}
+
+		yePrint(state)
+		print(state.get("over-background"))
+		if (state.get("over-background")) {
+		    x = 0;
+		    y = 0;
+		}
+
+		let canel = ywCanvasNewImg(wid, x, y, img.s(), src)
+		yePrint(canel)
+		if (state.get("over-background")) {
+		    const bg_size = ywSizeCreate(ywRectW(wid_rect), ywRectH(wid_rect))
+		    ywCanvasForceSize(canel, bg_size)
+		}
+	    } else {
+		ywCanvasNewRectangleByRect(wid, state.get("where"), contry_colors[i], 1)
+	    }
 	    let where_txt = yeCreateCopy(where)
 
-	    ywPosAddXY(where_txt, 10, 20)
-	    ywCanvasNewTextByStr(wid, where_txt.geti(0), where_txt.geti(1), yeGetKeyAt(map, i))
+	    if (!state.get("no_name")) {
+		ywPosAddXY(where_txt, 10, 20)
+		ywCanvasNewTextByStr(wid, where_txt.geti(0), where_txt.geti(1), yeGetKeyAt(map, i))
+	    }
 	}
 	let sqs = yeCreateArray(squads, yeGetKeyAt(map, i))
 	let state_size = state.geti("size")
