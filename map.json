@@ -12,6 +12,8 @@
 	"type": "road",
 	"size": 0,
 	"to": ["southgate", "Hator South", "south field"],
+	"img": ["northern_isle-southgate-north.png", [1900, 1860, 1900, 2300]],
+	"over-background": true,
 	"where": [ 270 , 260 , 170, 100]
     },
     "south field": {
@@ -37,9 +39,11 @@
 	"to": ["Hator South"],
 	"where": [ 300 , 20, 100 , 100 ]
     },
-    "furgate": {
+    "cloudbloomport": {
 	"type": "town",
 	"no_name": true,
+	"img": ["northern_isle-cloudbloomport.png", [1900, 1860, 1900, 2300]],
+	"over-background": true,
 	"size": 2,
 	"where": [  450 , 280 , 190, 130]
     }
