@@ -361,15 +361,13 @@ function nt_canvas_init(wid, map_img)
 		    img = img.get(0)
 		}
 
-		yePrint(state)
-		print(state.get("over-background"))
 		if (state.get("over-background")) {
 		    x = 0;
 		    y = 0;
 		}
 
 		let canel = ywCanvasNewImg(wid, x, y, img.s(), src)
-		yePrint(canel)
+		state.push(canel, "canel")
 		if (state.get("over-background")) {
 		    const bg_size = ywSizeCreate(ywRectW(wid_rect), ywRectH(wid_rect))
 		    ywCanvasForceSize(canel, bg_size)

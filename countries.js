@@ -42,14 +42,22 @@ function select_country(wid, eves)
 	check_button(wid, eves, main_buttons)
 	map.forEach(function(contry, i) {
 	    let poly = contry.get("where")
+	    let img = contry.get("img")
 
-	    if (ywPosX(mouse_pos) < ywPosX(poly) ||
-		ywPosY(mouse_pos) < ywPosY(poly))
-		return;
+	    if (!img) {
+		print("no img")
+		if (ywPosX(mouse_pos) < ywPosX(poly) ||
+		    ywPosY(mouse_pos) < ywPosY(poly))
+		    return;
 
-	    if (ywPosX(mouse_pos) > ywPosX(poly) + ywRectW(poly) ||
-		ywPosY(mouse_pos) > ywPosY(poly) + ywRectH(poly))
-		return
+		if (ywPosX(mouse_pos) > ywPosX(poly) + ywRectW(poly) ||
+		    ywPosY(mouse_pos) > ywPosY(poly) + ywRectH(poly))
+		    return
+	    } else {
+		let canel = contry.get("canel")
+		if (!ywCanvasObjectsCheckPointColisions(canel, mouse_pos))
+		    return
+	    }
 
 	    wid.setAt("can_col", ywCanvasNewRectangleByRect(wid, poly, contry_colors[i], 1))
 	    if (mouse_press) {

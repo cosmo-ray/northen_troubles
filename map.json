@@ -4,6 +4,8 @@
 	"no_name": true,
 	"size": 2,
 	"to": ["southgate north", "south field"],
+	"img": ["northern_isle-southgate.png", [1900, 1860, 1900, 2300]],
+	"over-background": true,
 	"where": [ 230 , 400 , 220 , 150 ]
     },
     "southgate north": {
