@@ -34,9 +34,11 @@ function select_country(wid, eves)
     }
 
     if (mouse_pos) {
+	let can_col = false
 	if (wid.get("can_col")) {
 	    ywCanvasRemoveObj(wid, wid.get("can_col"))
 	    wid.rm("can_col")
+	    can_col = true
 	}
 
 	check_button(wid, eves, main_buttons)
@@ -45,7 +47,6 @@ function select_country(wid, eves)
 	    let img = contry.get("img")
 
 	    if (!img) {
-		print("no img")
 		if (ywPosX(mouse_pos) < ywPosX(poly) ||
 		    ywPosY(mouse_pos) < ywPosY(poly))
 		    return;
@@ -55,11 +56,19 @@ function select_country(wid, eves)
 		    return
 	    } else {
 		let canel = contry.get("canel")
+
+		ywCanvasRemoveColorMod(canel)
 		if (!ywCanvasObjectsCheckPointColisions(canel, mouse_pos))
 		    return
 	    }
 
-	    wid.setAt("can_col", ywCanvasNewRectangleByRect(wid, poly, contry_colors[i], 1))
+	    if (!img) {
+		wid.setAt("can_col", ywCanvasNewRectangleByRect(wid, poly, contry_colors[i], 1))
+	    } else {
+		let canel = contry.get("canel")
+		ywCanvasSetColorModRGBA(canel, 100, 100, 100, 255);
+	    }
+
 	    if (mouse_press) {
 		wid.setAt("selected_country", i)
 		wid.get("select_ux").forEach(function(c, i) {
