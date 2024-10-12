@@ -20,6 +20,8 @@
 	"type": "field",
 	"no_name": true,
 	"size": 1,
+	"img": ["northern_isle-woodpath-east.png", [1900, 1860, 1900, 2300]],
+	"over-background": true,
 	"to": ["deepmarsh", "southgate"],
 	"where": [ 170 , 120 , 350 , 140 ]
     },
@@ -35,6 +37,8 @@
     "Hator": {
 	"type": "town",
 	"no_name": true,
+	"img": ["northern_isle-hator.png", [1900, 1860, 1900, 2300]],
+	"over-background": true,
 	"size": 1,
 	"to": ["Hator South"],
 	"where": [ 300 , 20, 100 , 100 ]
