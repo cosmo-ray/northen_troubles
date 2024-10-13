@@ -3,7 +3,7 @@
 	"type": "town",
 	"no_name": true,
 	"size": 2,
-	"to": ["southgate north", "south field"],
+	"to": ["southgate north", "woodpath east"],
 	"img": ["northern_isle-southgate.png", [1900, 1860, 1900, 2300]],
 	"over-background": true,
 	"where": [ 230 , 400 , 220 , 150 ]
@@ -11,12 +11,12 @@
     "southgate north": {
 	"type": "road",
 	"size": 0,
-	"to": ["southgate", "Hator South", "south field"],
+	"to": ["southgate", "Hator South", "woodpath east"],
 	"img": ["northern_isle-southgate-north.png", [1900, 1860, 1900, 2300]],
 	"over-background": true,
 	"where": [ 270 , 260 , 170, 100]
     },
-    "south field": {
+    "woodpath east": {
 	"type": "field",
 	"no_name": true,
 	"size": 1,
@@ -25,10 +25,28 @@
 	"to": ["deepmarsh", "southgate"],
 	"where": [ 170 , 120 , 350 , 140 ]
     },
+    "woodpath west": {
+	"type": "field",
+	"no_name": true,
+	"size": 1,
+	"img": ["northern_isle-woodpath-west.png", [1900, 1860, 1900, 2300]],
+	"over-background": true,
+	"to": ["deepmarsh", "southgate"],
+	"where": [ 170 , 120 , 350 , 140 ]
+    },
+    "ilses": {
+	"type": "field",
+	"no_name": true,
+	"size": 1,
+	"img": ["northern_isle-isles.png", [1900, 1860, 1900, 2300]],
+	"over-background": true,
+	"to": ["deepmarsh", "southgate"],
+	"where": [ 170 , 120 , 350 , 140 ]
+    },
     "deepmarsh": {
 	"type": "field",
 	"no_name": true,
-	"to": ["south field", "Hator South"],
+	"to": ["woodpath east", "Hator South"],
 	"size": 2,
 	"img": ["northern_isle-deepmarsh.png", [1900, 1860, 1900, 2300]],
 	"over-background": true,
