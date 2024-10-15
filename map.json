@@ -3,18 +3,18 @@
 	"type": "town",
 	"no_name": true,
 	"size": 2,
-	"to": ["southgate north", "woodpath east"],
+	"to": ["southgate north", "deepmarsh"],
 	"img": ["northern_isle-southgate.png", [1900, 1860, 1900, 2300]],
 	"over-background": true,
-	"where": [ 230 , 400 , 220 , 150 ]
+	"where": [ 320 , 440 , 50 , 50 ]
     },
     "southgate north": {
 	"type": "road",
 	"size": 0,
-	"to": ["southgate", "Hator South", "woodpath east"],
+	"to": ["southgate", "cloudbloomport", "woodpath west", "deepmarsh"],
 	"img": ["northern_isle-southgate-north.png", [1900, 1860, 1900, 2300]],
 	"over-background": true,
-	"where": [ 270 , 260 , 170, 100]
+	"where": [ 300 , 350 , 50, 50]
     },
     "woodpath east": {
 	"type": "field",
@@ -22,8 +22,8 @@
 	"size": 1,
 	"img": ["northern_isle-woodpath-east.png", [1900, 1860, 1900, 2300]],
 	"over-background": true,
-	"to": ["deepmarsh", "southgate"],
-	"where": [ 170 , 120 , 350 , 140 ]
+	"to": ["cloudbloomport", "woodpath west", "Hator", "ilses"],
+	"where": [ 400 , 200 , 50 , 50 ]
     },
     "woodpath west": {
 	"type": "field",
@@ -31,8 +31,8 @@
 	"size": 1,
 	"img": ["northern_isle-woodpath-west.png", [1900, 1860, 1900, 2300]],
 	"over-background": true,
-	"to": ["deepmarsh", "southgate"],
-	"where": [ 170 , 120 , 350 , 140 ]
+	"to": ["deepmarsh", "woodpath east", "ilses", "southgate north"],
+	"where": [ 250 , 250 , 50 , 50 ]
     },
     "ilses": {
 	"type": "field",
@@ -40,17 +40,17 @@
 	"size": 1,
 	"img": ["northern_isle-isles.png", [1900, 1860, 1900, 2300]],
 	"over-background": true,
-	"to": ["deepmarsh", "southgate"],
-	"where": [ 170 , 120 , 350 , 140 ]
+	"to": ["woodpath west", "Hator", "woodpath east"],
+	"where": [ 45 , 150 , 50 , 50 ]
     },
     "deepmarsh": {
 	"type": "field",
 	"no_name": true,
-	"to": ["woodpath east", "Hator South"],
+	"to": ["woodpath west", "southgate north", "southgate"],
 	"size": 2,
 	"img": ["northern_isle-deepmarsh.png", [1900, 1860, 1900, 2300]],
 	"over-background": true,
-	"where": [ 70 , 320, 150 , 200 ]
+	"where": [ 120 , 370, 50 , 50 ]
     },
     "Hator": {
 	"type": "town",
@@ -58,15 +58,16 @@
 	"img": ["northern_isle-hator.png", [1900, 1860, 1900, 2300]],
 	"over-background": true,
 	"size": 1,
-	"to": ["Hator South"],
-	"where": [ 300 , 20, 100 , 100 ]
+	"to": ["ilses", "woodpath east"],
+	"where": [ 330 , 40, 50 , 50 ]
     },
     "cloudbloomport": {
 	"type": "town",
 	"no_name": true,
 	"img": ["northern_isle-cloudbloomport.png", [1900, 1860, 1900, 2300]],
 	"over-background": true,
+	"to": ["southgate north", "woodpath east"],
 	"size": 2,
-	"where": [  450 , 280 , 190, 130]
+	"where": [  450 , 280 , 50, 50]
     }
 }
