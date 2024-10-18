@@ -65,8 +65,14 @@ function select_country(wid, eves)
 	    if (!img) {
 		wid.setAt("can_col", ywCanvasNewRectangleByRect(wid, poly, contry_colors[i], 1))
 	    } else {
+		let over_color = contry.get("over-color")
 		let canel = contry.get("canel")
-		ywCanvasSetColorModRGBA(canel, 100, 100, 100, 255);
+		if (over_color) {
+		    ywCanvasSetColorModRGBA(canel, over_color.geti(0), over_color.geti(1),
+					    over_color.geti(2), 255);
+		} else {
+		    ywCanvasSetColorModRGBA(canel, 100, 100, 100, 255);
+		}
 	    }
 
 	    if (mouse_press) {

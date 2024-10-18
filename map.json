@@ -56,6 +56,7 @@
 	"type": "town",
 	"no_name": true,
 	"img": ["northern_isle-hator.png", [1900, 1860, 1900, 2300]],
+	"over-color": [0, 0, 0, 255],
 	"over-background": true,
 	"size": 1,
 	"to": ["ilses", "woodpath east"],
