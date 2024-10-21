@@ -132,8 +132,9 @@ const STEEL_UPGRADE_COST = 2
 
 function upgrade_guy_weapon(wid, args)
 {
-    let guy = args[0]
-    let txt = args[1]
+    yePrint(args)
+    let guy = args.get(0)
+    let txt = args.get(1)
     const weapon_name = guy.get("weapon").gets("name")
     const items = wid.get("items")
     const weapons = items.get("weapons")
@@ -151,9 +152,7 @@ function upgrade_guy_weapon(wid, args)
 	guy.setAt("weapon", w)
     }
 
-    let ux = wid.get("country_ux")
-    main_buttons.splice(main_buttons.indexOf(upgrade_guy_weapon))
-    ux_rm(wid, ux, txt)
+    rm_button2(wid, "upgrade-weapon")
     print("Upgrade Weapon !")
 }
 
@@ -172,8 +171,11 @@ function select_guy(wid, guy)
 
 	print("can upgrade ", guy.gets("name"))
 	const txt = "Upgrade " + guy.gets("name") + " " + weapon_name
-	mk_button(wid, ux, main_buttons, txt,
-		  150, 250, "100 100 100", upgrade_guy_weapon, [guy, txt])
+	let arg = yeCreateArray()
+	arg.setAt(0, guy)
+	arg.setAt(1, txt)
+	mk_button2(wid, "upgrade-weapon", txt,
+		  150, 250, "100 100 100", upgrade_guy_weapon, arg)
     }
 }
 

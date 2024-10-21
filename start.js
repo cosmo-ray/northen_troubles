@@ -128,6 +128,7 @@ function back(wid)
     ywCanvasClearArray(wid, wid.get("country_ux"))
     wid.rm("country_ux")
     to_buttons = []
+    clear_buttons_2(wid)
     ywCanvasClearArray(wid, wid.get("ok_ux"))
 }
 

@@ -13,6 +13,21 @@
 //  0. You just DO WHAT THE FUCK YOU WANT TO.
 
 
+/* button is old api but horible to use */
+const BUTTON_POS = 0
+const BUTTON_CALLBACK = 1
+const BUTTON_ARG = 2
+
+/* those one try to be easier to manipulate */
+const SMART_BT_POS = 0
+const SMART_BT_COLOR = 1
+const SMART_BT_CALLBACK = 2
+const SMART_BT_ARG = 4
+const SMART_BT_BG_SQUARE = 5
+const SMART_BT_FG_SQUARE = 6
+const SMART_BT_TXT = 7
+const SMART_BT_OVER_TXT = 8
+
 function ux_rm(wid, container, in_txt)
 {
     let idx_target = -1;
@@ -44,7 +59,7 @@ function square_txt(wid, container, x, y, color, txt, fixe_w, fixe_h)
     if (alpha) {
 	color = colors[0] + ' ' + colors[1] + ' ' + colors[2]
     } else {
-	alpha = "100"
+	alpha = "160"
     }
     const split_txt = txt.split("\n")
     let w = fixe_w
@@ -77,6 +92,96 @@ function square_txt(wid, container, x, y, color, txt, fixe_w, fixe_h)
     return [w, h]
 }
 
+function print_button(button_containers, func)
+{
+    for (b of button_containers) {
+	if (!func)
+	    print(b)
+	else if (func == b[BUTTON_CALLBACK])
+	    print(b)
+    }
+}
+
+
+function clear_buttons_2(wid)
+{
+    let smart_button = wid.get("smart_button")
+
+    for (sb of smart_button) {
+	ywCanvasRemoveObj(wid, sb.get(SMART_BT_BG_SQUARE))
+	ywCanvasRemoveObj(wid, sb.get(SMART_BT_FG_SQUARE))
+	ywCanvasRemoveObj(wid, sb.get(SMART_BT_TXT))
+	ywCanvasRemoveObj(wid, sb.get(SMART_BT_OVER_TXT))
+    }
+    yeClearArray(smart_button)
+}
+
+function rm_button2(wid, name)
+{
+    let smart_button = wid.get("smart_button")
+    let sg = smart_button.get(name)
+
+    if (!sb)
+	return
+    ywCanvasRemoveObj(wid, sb.get(SMART_BT_BG_SQUARE))
+    ywCanvasRemoveObj(wid, sb.get(SMART_BT_FG_SQUARE))
+    ywCanvasRemoveObj(wid, sb.get(SMART_BT_TXT))
+    ywCanvasRemoveObj(wid, sb.get(SMART_BT_OVER_TXT))
+    smart_button.rm(sb)
+}
+
+function mk_button2(wid, name, txt, x, y, color, callback, arg)
+{
+    const colors = color.split(' ')
+    let alpha = colors[3]
+
+    if (alpha) {
+	color = colors[0] + ' ' + colors[1] + ' ' + colors[2]
+    } else {
+	alpha = "160"
+    }
+
+
+    let smart_button = wid.get("smart_button")
+    if (!smart_button) {
+	smart_button = yeCreateArray(wid, "smart_button")
+    }
+
+    let ret = yeLen(smart_button)
+    let cnt = yeCreateArray(smart_button, name)
+
+    ywPosCreate(x, y, cnt)
+    cnt.setAt(SMART_BT_COLOR, color)
+    yeCreateFunction(callback, cnt)
+    cnt.setAt(SMART_BT_ARG, arg)
+
+    const split_txt = txt.split("\n")
+    let w = 0
+    for (line of split_txt) {
+	const tmp_w = line.length * ywidFontW() + 10
+	if (tmp_w > w) {
+	    w = tmp_w
+	}
+    }
+    let h = ywidFontH() * split_txt.length + 10
+    let txt_y_threshold = 2
+    if (h > 300)
+	txt_y_threshold = 80
+    else if (h > 40)
+	txt_y_threshold = 10
+
+    cnt.setAt(SMART_BT_BG_SQUARE,
+	      ywCanvasNewRectangleExt(wid, x, y, w,
+				      h, "rgba: " + color + " 255", 2))
+    cnt.setAt(SMART_BT_FG_SQUARE,
+	      ywCanvasNewRectangleExt(wid, x, y, w,
+				      h, "rgba: " + color + " " + alpha, 3))
+    cnt.setAt(SMART_BT_TXT,
+	      ywCanvasNewTextByStr(wid, x + txt_y_threshold, y + 2, txt))
+
+    return ret
+}
+
 function mk_button(wid, ux_cnt, bt_cnt, txt, x, y, color, callback, arg)
 {
     let w_h = square_txt(wid, ux_cnt, x, y, color, txt)
@@ -100,17 +205,46 @@ function check_button(wid, eves, buttons, no_clean)
 	    }
 	}
     for (button of buttons) {
-	let r = ywRectCreateInts(button[0][0], button[0][1], button[0][2], button[0][3])
+	let r = ywRectCreateInts(button[BUTTON_POS][0], button[BUTTON_POS][1],
+				 button[BUTTON_POS][2], button[BUTTON_POS][3])
 
 	if (ywRectContainPos(r, mouse_pos, 1)) {
 	    if (yevAnyMouseDown(eves))
-		button[1](wid, button[2])
+		button[BUTTON_CALLBACK](wid, button[BUTTON_ARG])
 	    else {
 		yePushBack(bt_highlight,
-			   ywCanvasNewRectangleExt(wid, button[0][0], button[0][1],
-						   button[0][2], button[0][3],
+			   ywCanvasNewRectangleExt(wid, button[BUTTON_POS][0],
+						   button[BUTTON_POS][1],
+						   button[BUTTON_POS][2],
+						   button[BUTTON_POS][3],
 						   "rgba: 120 140 130 100", 3))
 	    }
+	}
+    }
+
+    let smart_buttons = wid.get("smart_button")
+    if (!smart_buttons)
+	return
+
+    for (sb of smart_buttons) {
+	if (ywCanvasObjectsCheckPointColisions(sb.get(SMART_BT_BG_SQUARE), mouse_pos)) {
+	    let bt_pos = sb.get(SMART_BT_POS)
+	    let bt_size = sb.get(SMART_BT_BG_SQUARE).get("rect").get(0)
+	    let x = bt_pos.geti(0)
+	    let y = bt_pos.geti(1)
+	    let w = bt_size.geti(0)
+	    let h = bt_size.geti(1)
+
+	    if (yevAnyMouseDown(eves))
+		sb.get(SMART_BT_CALLBACK).call(wid, sb.get(SMART_BT_ARG))
+	    else if (!sb.get(SMART_BT_OVER_TXT)) {
+		let over_bt = ywCanvasNewRectangleExt(wid, x, y, w, h,
+						      "rgba: 120 140 130 100", 3)
+		sb.setAt(SMART_BT_OVER_TXT, over_bt)
+	    }
+	} else if (mouse_pos && !no_clean && sb.get(SMART_BT_OVER_TXT)) {
+	    ywCanvasRemoveObj(wid, sb.get(SMART_BT_OVER_TXT))
+	    sb.rm(SMART_BT_OVER_TXT)
 	}
     }
 }
