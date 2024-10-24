@@ -33,7 +33,7 @@ function ux_rm(wid, container, in_txt)
     let idx_target = -1;
     let idx = 0;
 
-    for (c of container) {
+    for (let c of container) {
 	const txt = yeGet(c, 2)
 	if (yeGetString(txt) == in_txt) {
 	    idx_target = idx;
@@ -65,7 +65,7 @@ function square_txt(wid, container, x, y, color, txt, fixe_w, fixe_h)
     let w = fixe_w
     if (!fixe_w || fixe_w == undefined) {
 	w = 0
-	for (line of split_txt) {
+	for (let line of split_txt) {
 	    const tmp_w = line.length * ywidFontW() + 10
 	    if (tmp_w > w) {
 		w = tmp_w
@@ -94,7 +94,7 @@ function square_txt(wid, container, x, y, color, txt, fixe_w, fixe_h)
 
 function print_button(button_containers, func)
 {
-    for (b of button_containers) {
+    for (let b of button_containers) {
 	if (!func)
 	    print(b)
 	else if (func == b[BUTTON_CALLBACK])
@@ -163,7 +163,7 @@ function mk_button2(wid, name, txt, x, y, color, callback, arg)
 
     const split_txt = txt.split("\n")
     let w = 0
-    for (line of split_txt) {
+    for (let line of split_txt) {
 	const tmp_w = line.length * ywidFontW() + 10
 	if (tmp_w > w) {
 	    w = tmp_w
@@ -210,7 +210,7 @@ function check_button(wid, eves, buttons, no_clean)
 		ywCanvasClearArray(wid, bt_highlight)
 	    }
 	}
-    for (button of buttons) {
+    for (let button of buttons) {
 	let r = ywRectCreateInts(button[BUTTON_POS][0], button[BUTTON_POS][1],
 				 button[BUTTON_POS][2], button[BUTTON_POS][3])
 
@@ -232,7 +232,7 @@ function check_button(wid, eves, buttons, no_clean)
     if (!smart_buttons)
 	return
 
-    for (sb of smart_buttons) {
+    for (let sb of smart_buttons) {
 	if (ywCanvasObjectsCheckPointColisions(sb.get(SMART_BT_BG_SQUARE), mouse_pos)) {
 	    let bt_pos = sb.get(SMART_BT_POS)
 	    let bt_size = sb.get(SMART_BT_BG_SQUARE).get("rect").get(0)
@@ -265,7 +265,7 @@ function ok_text(wid, txt, func, arg)
 	    txt = txt.s(txt)
 	} else {
 	    let new_txt = ""
-	    for (t of txt) {
+	    for (let t of txt) {
 		if (new_txt != "")
 		    new_txt += "\n"
 		new_txt = new_txt + t.s()

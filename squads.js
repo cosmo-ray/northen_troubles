@@ -34,7 +34,7 @@ function move_to(wid)
     map.forEach( function (c, i) {
 	if (i == selected_country.i())
 	    return;
-	for (dest of avaible_dest) {
+	for (let dest of avaible_dest) {
 	    if (yeGetKeyAt(map, i) == dest.s())
 		return;
 	}
@@ -121,7 +121,7 @@ function hire(wid)
 
 function is_squad_dead(squad)
 {
-    for (g of squad.get("guys")) {
+    for (let g of squad.get("guys")) {
 	if (g.geti("life") > 0) {
 	    return false;
 	}
@@ -217,7 +217,7 @@ function sq_select(wid, s)
     let y_g = 90
     let x_g =  110
     let i = 0
-    for (g of guys) {
+    for (let g of guys) {
 	let txt = g.gets("name") + "\n"
 	txt += "PV: " + g.geti("life") + " / " + g.geti("max_life")
 	square_txt(wid, ux, x_g, y_g, "100 100 100", txt)
