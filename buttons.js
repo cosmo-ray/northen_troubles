@@ -106,8 +106,10 @@ function print_button(button_containers, func)
 function clear_buttons_2(wid)
 {
     let smart_button = wid.get("smart_button")
+    if (!smart_button)
+	return
 
-    for (sb of smart_button) {
+    for (let sb of smart_button) {
 	ywCanvasRemoveObj(wid, sb.get(SMART_BT_BG_SQUARE))
 	ywCanvasRemoveObj(wid, sb.get(SMART_BT_FG_SQUARE))
 	ywCanvasRemoveObj(wid, sb.get(SMART_BT_TXT))
@@ -119,7 +121,11 @@ function clear_buttons_2(wid)
 function rm_button2(wid, name)
 {
     let smart_button = wid.get("smart_button")
-    let sg = smart_button.get(name)
+
+    if (!smart_button)
+	return
+
+    let sb = smart_button.get(name)
 
     if (!sb)
 	return

@@ -1,3 +1,4 @@
+
 //           DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
 //                   Version 2, December 2004
 //
@@ -132,7 +133,6 @@ const STEEL_UPGRADE_COST = 2
 
 function upgrade_guy_weapon(wid, args)
 {
-    yePrint(args)
     let guy = args.get(0)
     let txt = args.get(1)
     const weapon_name = guy.get("weapon").gets("name")
@@ -158,7 +158,8 @@ function upgrade_guy_weapon(wid, args)
 
 function select_guy(wid, guy)
 {
-    print("guy select: ", guy)
+    rm_button2(wid, "upgrade-weapon")
+
     let wealth = wid.get("wealth")
 
     if (wealth.i() < 0) {
@@ -167,7 +168,6 @@ function select_guy(wid, guy)
     }
     const weapon_name = guy.get("weapon").gets("name")
     if (weapon_name == "iron longsword" || weapon_name == "iron spear") {
-	let ux = wid.get("country_ux")
 
 	print("can upgrade ", guy.gets("name"))
 	const txt = "Upgrade " + guy.gets("name") + " " + weapon_name
@@ -177,6 +177,20 @@ function select_guy(wid, guy)
 	mk_button2(wid, "upgrade-weapon", txt,
 		  150, 250, "100 100 100", upgrade_guy_weapon, arg)
     }
+
+    let stats = guy.get("stats")
+
+
+    let wid_pix = yeGet(wid, "wid-pix");
+    let ux = wid.get("country_ux")
+    let text = "weapon: " + weapon_name + "\nstats:\n" +
+	"Strength: " + stats.geti("strength") + "\n" +
+	"Charm: " + stats.geti("charm") + "\n" +
+	"Agility: " + stats.geti("agility") + "\n" +
+	"Smart: " + stats.geti("smart") + "\n"
+    square_txt(wid, ux, 450, 245, "150 150 150 180", text, ywRectW(wid_pix) / 2 - 80, 300)
+
+
 }
 
 function sq_select(wid, s)
