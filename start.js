@@ -211,7 +211,7 @@ function nt_action(wid, eves)
 					   s, yeGetKeyAt(squads, i))
 		} else {
 		    print("check wheal effect");
-		    for (g of s.get("guys")) {
+		    for (let g of s.get("guys")) {
 			let life = g.get("life")
 
 			if (wealth > 0) {
