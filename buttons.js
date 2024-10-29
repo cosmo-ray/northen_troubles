@@ -204,6 +204,11 @@ function check_button(wid, eves, buttons, no_clean)
     let mouse_pos = yevMousePos(eves)
     let bt_highlight = yeTryCreateArray(wid, "bt_highlight")
 
+    if (yevIsKeyDown(eves, Y_ESC_KEY)) {
+	back(wid)
+	return;
+    }
+
     if (mouse_pos)
 	if (!no_clean) {
 	    if (bt_highlight) {
