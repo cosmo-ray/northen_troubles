@@ -137,6 +137,12 @@ function country_action(wid, eves, selected_country)
 	mk_txt(wid, "poor_txt", 210, 80, "0 0 0", "poor relation:")
 	mk_bar(wid, "poor_bar", 45, 210, 100, 180, "0 0 0")
 
+	mk_txt(wid, "guards_txt", 210, 120, "0 0 0", "guards relation:")
+	mk_bar(wid, "guards_bar", 45, 210, 140, 180, "0 0 0")
+
+	mk_txt(wid, "noble_txt", 210, 160, "0 0 0", "noble relation:")
+	mk_bar(wid, "noble_bar", 45, 210, 180, 180, "0 0 0")
+
 	let s_y = 85
 	squads.forEach(function (s, i) {
 	    let name = yeGetKeyAt(squads, i)
