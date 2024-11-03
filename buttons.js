@@ -191,12 +191,12 @@ function mk_bar(wid, name, percent, x, y, len, color)
     cnt.setAt(SMART_BT_BG_SQUARE,
 	      ywCanvasNewRectangleExt(wid, x, y, len,
 				      20, "rgba: " + col + " 255", 2))
-    let fg_len = percent * len / 100 - 4 < 0
-    if (fg_len < 4)
+    let fg_len = percent * len / 100 - 4
+    if (fg_len < 0)
 	fg_len = 0
     cnt.setAt(SMART_BT_FG_SQUARE,
 	      ywCanvasNewRectangleExt(wid, x + 2, y + 2, fg_len,
-	 			      16, "rgba: " + col + " " + alpha, 3))
+	 			      16, "rgba: " + col + " " + "255", 3))
     return cnt
  }
 
