@@ -19,14 +19,19 @@ const BUTTON_CALLBACK = 1
 const BUTTON_ARG = 2
 
 /* those one try to be easier to manipulate */
-const SMART_BT_POS = 0
-const SMART_BT_COLOR = 1
-const SMART_BT_CALLBACK = 2
+const SMART_BT_TYPE = 0
+const SMART_BT_POS = 1
+const SMART_BT_COLOR = 2
+const SMART_BT_CALLBACK = 3
 const SMART_BT_ARG = 4
 const SMART_BT_BG_SQUARE = 5
 const SMART_BT_FG_SQUARE = 6
 const SMART_BT_TXT = 7
 const SMART_BT_OVER_TXT = 8
+
+const SMART_TYPE_BT = 0
+const SMART_TYPE_BAR = 1
+const SMART_TYPE_TXT = 2
 
 function ux_rm(wid, container, in_txt)
 {
@@ -105,27 +110,27 @@ function print_button(button_containers, func)
 
 function clear_buttons_2(wid)
 {
-    let smart_button = wid.get("smart_button")
-    if (!smart_button)
+    let smart_ux = wid.get("smart_ux")
+    if (!smart_ux)
 	return
 
-    for (let sb of smart_button) {
+    for (let sb of smart_ux) {
 	ywCanvasRemoveObj(wid, sb.get(SMART_BT_BG_SQUARE))
 	ywCanvasRemoveObj(wid, sb.get(SMART_BT_FG_SQUARE))
 	ywCanvasRemoveObj(wid, sb.get(SMART_BT_TXT))
 	ywCanvasRemoveObj(wid, sb.get(SMART_BT_OVER_TXT))
     }
-    yeClearArray(smart_button)
+    yeClearArray(smart_ux)
 }
 
 function rm_button2(wid, name)
 {
-    let smart_button = wid.get("smart_button")
+    let smart_ux = wid.get("smart_ux")
 
-    if (!smart_button)
+    if (!smart_ux)
 	return
 
-    let sb = smart_button.get(name)
+    let sb = smart_ux.get(name)
 
     if (!sb)
 	return
@@ -133,8 +138,68 @@ function rm_button2(wid, name)
     ywCanvasRemoveObj(wid, sb.get(SMART_BT_FG_SQUARE))
     ywCanvasRemoveObj(wid, sb.get(SMART_BT_TXT))
     ywCanvasRemoveObj(wid, sb.get(SMART_BT_OVER_TXT))
-    smart_button.rm(sb)
+    smart_ux.rm(sb)
 }
+
+function smart_ux_mk_or_get(wid)
+{
+    let smart_ux = wid.get("smart_ux")
+    if (!smart_ux) {
+	smart_ux = yeCreateArray(wid, "smart_ux")
+    }
+    return smart_ux
+}
+
+function handle_alpha(color)
+{
+    const colors = color.split(' ')
+    let alpha = colors[3]
+
+    if (alpha) {
+	color = colors[0] + ' ' + colors[1] + ' ' + colors[2]
+    } else {
+	alpha = "160"
+    }
+    return [color, alpha]
+}
+
+function mk_txt(wid, name, x, y, color, txt)
+{
+    let [col, alpha] = handle_alpha(color)
+    let smart_ux = smart_ux_mk_or_get(wid)
+    let cnt = yeCreateArray(smart_ux, name)
+
+    yeCreateInt(SMART_TYPE_TXT, cnt)
+    ywPosCreate(x, y, cnt)
+    cnt.setAt(SMART_BT_COLOR, col)
+
+    let txt_e = ywCanvasNewTextByStr(wid, x, y, txt)
+    cnt.setAt(SMART_BT_TXT, txt_e)
+    ywCanvasSetStrColor(txt_e, col + " " + alpha)
+    return cnt
+}
+
+function mk_bar(wid, name, percent, x, y, len, color)
+{
+    let [col, alpha] = handle_alpha(color)
+    let smart_ux = smart_ux_mk_or_get(wid)
+    let cnt = yeCreateArray(smart_ux, name)
+
+    yeCreateInt(SMART_TYPE_BAR, cnt)
+    ywPosCreate(x, y, cnt)
+    cnt.setAt(SMART_BT_COLOR, col)
+    cnt.setAt(SMART_BT_BG_SQUARE,
+	      ywCanvasNewRectangleExt(wid, x, y, len,
+				      20, "rgba: " + col + " 255", 2))
+    let fg_len = percent * len / 100 - 4 < 0
+    if (fg_len < 4)
+	fg_len = 0
+    cnt.setAt(SMART_BT_FG_SQUARE,
+	      ywCanvasNewRectangleExt(wid, x + 2, y + 2, fg_len,
+	 			      16, "rgba: " + col + " " + alpha, 3))
+    return cnt
+ }
+
 
 function mk_button2(wid, name, txt, x, y, color, callback, arg)
 {
@@ -148,14 +213,11 @@ function mk_button2(wid, name, txt, x, y, color, callback, arg)
     }
 
 
-    let smart_button = wid.get("smart_button")
-    if (!smart_button) {
-	smart_button = yeCreateArray(wid, "smart_button")
-    }
+    let smart_ux = smart_ux_mk_or_get(wid)
 
-    let ret = yeLen(smart_button)
-    let cnt = yeCreateArray(smart_button, name)
+    let cnt = yeCreateArray(smart_ux, name)
 
+    yeCreateInt(SMART_TYPE_BT, cnt)
     ywPosCreate(x, y, cnt)
     cnt.setAt(SMART_BT_COLOR, color)
     yeCreateFunction(callback, cnt)
@@ -185,7 +247,7 @@ function mk_button2(wid, name, txt, x, y, color, callback, arg)
     cnt.setAt(SMART_BT_TXT,
 	      ywCanvasNewTextByStr(wid, x + txt_y_threshold, y + 2, txt))
 
-    return ret
+    return cnt
 }
 
 function mk_button(wid, ux_cnt, bt_cnt, txt, x, y, color, callback, arg)
@@ -233,11 +295,13 @@ function check_button(wid, eves, buttons, no_clean)
 	}
     }
 
-    let smart_buttons = wid.get("smart_button")
-    if (!smart_buttons)
+    let smart_uxs = wid.get("smart_ux")
+    if (!smart_uxs)
 	return
 
-    for (let sb of smart_buttons) {
+    for (let sb of smart_uxs) {
+	if (sb.geti(SMART_BT_TYPE) != SMART_TYPE_BT)
+	    continue;
 	if (ywCanvasObjectsCheckPointColisions(sb.get(SMART_BT_BG_SQUARE), mouse_pos)) {
 	    let bt_pos = sb.get(SMART_BT_POS)
 	    let bt_size = sb.get(SMART_BT_BG_SQUARE).get("rect").get(0)

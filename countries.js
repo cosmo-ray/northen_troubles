@@ -132,6 +132,11 @@ function country_action(wid, eves, selected_country)
 
 	square_txt(wid, country_ux, 10, 50, "160 160 160", "Squades in town",
 		   200, 200)
+	square_txt(wid, country_ux, 200, 50, "160 160 160", "town factions relationship",
+		   250, 200)
+	mk_txt(wid, "poor_txt", 210, 80, "0 0 0", "poor relation:")
+	mk_bar(wid, "poor_bar", 45, 210, 100, 180, "0 0 0")
+
 	let s_y = 85
 	squads.forEach(function (s, i) {
 	    let name = yeGetKeyAt(squads, i)
