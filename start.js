@@ -314,7 +314,6 @@ function nt_canvas_init(wid, map_img)
     const wid_rect = wid.get("wid-pix");
     const bg_size = ywSizeCreate(ywRectW(wid_rect), ywRectH(wid_rect))
 
-
     let items = ygFileToEnt(YJSON, "./items.json")
     wid.setAt("items", items)
     let map = ygFileToEnt(YJSON, "./map.json")
@@ -386,6 +385,9 @@ function nt_canvas_init(wid, map_img)
 	let sqs = yeCreateArray(squads, yeGetKeyAt(map, i))
 	let state_size = state.geti("size")
 	if (state.gets("type") == "town") {
+	    state.setAt("poor_relation", 50)
+	    state.setAt("guard_relation", 50)
+	    state.setAt("noble_relation", 50)
 	    let sq = new_squad(sqs, "guards")
 
 	    sq.setAt("faction", "neutral")
@@ -397,6 +399,7 @@ function nt_canvas_init(wid, map_img)
 		squad_push(wid, guys, "peasant", "peasant", "peasant", "guard", "peasant")
 	    }
 	} else if (state.gets("type") == "field") {
+	    state.setAt("poor_relation", 50)
 	    if (state_size == 0) {
 		let sq = new_squad(sqs, "guards")
 		let guys = yeCreateArray(sq, "guys")
@@ -411,6 +414,8 @@ function nt_canvas_init(wid, map_img)
 		squad_push(wid, guys, "orc", "orc", "orc", "orc")
 	    }
 	} else if (state.gets("type") == "road") {
+	    state.setAt("poor_relation", 50)
+	    state.setAt("guard_relation", 50)
 	    let sq = new_squad(sqs, "enemies")
 	    let guys = yeCreateArray(sq, "guys")
 

@@ -134,14 +134,20 @@ function country_action(wid, eves, selected_country)
 		   200, 200)
 	square_txt(wid, country_ux, 200, 50, "160 160 160", "town factions relationship",
 		   250, 200)
+
+	let cur_map = map.get(selected_country.i())
 	mk_txt(wid, "poor_txt", 210, 80, "0 0 0", "poor relation:")
-	mk_bar(wid, "poor_bar", 45, 210, 100, 180, "0 100 0")
+	mk_bar(wid, "poor_bar", cur_map.geti("poor_relation"), 210, 100, 180, "0 100 0")
 
-	mk_txt(wid, "guards_txt", 210, 120, "0 0 0", "guards relation:")
-	mk_bar(wid, "guards_bar", 45, 210, 140, 180, "0 100 0")
+	if (cur_map.get("guard_relation")) {
+	    mk_txt(wid, "guards_txt", 210, 120, "0 0 0", "guards relation:")
+	    mk_bar(wid, "guards_bar", cur_map.geti("guard_relation"), 210, 140, 180, "0 100 0")
+	}
 
-	mk_txt(wid, "noble_txt", 210, 160, "0 0 0", "noble relation:")
-	mk_bar(wid, "noble_bar", 45, 210, 180, 180, "0 100 0")
+	if (cur_map.get("guard_relation")) {
+	    mk_txt(wid, "noble_txt", 210, 160, "0 0 0", "noble relation:")
+	    mk_bar(wid, "noble_bar", cur_map.geti("noble_relation"), 210, 180, 180, "0 100 0")
+	}
 
 	let s_y = 85
 	squads.forEach(function (s, i) {
