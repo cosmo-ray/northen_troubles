@@ -1,0 +1,24 @@
+{
+    "play with child": {
+	"txt": "one of your men play with a noble child",
+	"action": ["increaseIntMax",
+		   "northen_troubles.active_country.noble_relation",
+		   3, 100],
+	"condition": [">", "northen_troubles.active_country.noble_relation", 45]
+    },
+    "insulte someone": {
+	"txt": "some of your men, insulte a merchant in the market, who refuse to give him a discount",
+	"action": ["decreaseIntMin",
+		   "northen_troubles.active_country.poor_relation",
+		   2, 0],
+	"counter_actions" : [
+	    "do nothing",
+	    "present public excuse": {
+		"actions": [
+		    ["increaseInt", "northen_troubles.active_country.poor_relation", 3],
+		    ["decreaseIntMin", "northen_troubles.active_widget.mercenaries_moral", 2]
+		]
+	    }
+	]
+    }
+}
