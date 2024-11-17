@@ -319,6 +319,7 @@ function nt_canvas_init(wid, map_img)
     let map = ygFileToEnt(YJSON, "./map.json")
     let units = ygFileToEnt(YJSON, "./units.json")
     let stories = ygFileToEnt(YJSON, "./stories.json")
+    let events = ygFileToEnt(YJSON, "./events.json")
 
     let rect_texture = ywRectCreateInts(0, 0, 32, 32)
     ywTextureNewImg("flag_captured.png", rect_texture, wid, "neutral_flag")

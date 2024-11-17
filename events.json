@@ -13,7 +13,8 @@
 		   2, 0],
 	"counter_actions" : [
 	    "do nothing",
-	    "present public excuse": {
+	    {
+		"text": "present public excuse",
 		"actions": [
 		    ["increaseInt", "northen_troubles.active_country.poor_relation", 3],
 		    ["decreaseIntMin", "northen_troubles.active_widget.mercenaries_moral", 2]
