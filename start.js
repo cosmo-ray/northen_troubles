@@ -43,8 +43,9 @@ const WAIT_ACTION = 0
 const END_TURN_MOVE = 1
 const END_TURN_BATTLE = 2
 const END_TURN_REPORT = 3
-const STORY_STATE = 4
-const WAIT_BUTTON_IN = 5
+const END_TURN_EVENTS = 4
+const STORY_STATE = 5
+const WAIT_BUTTON_IN = 6
 
 const TURN_HP_RESTORATION = 4
 
@@ -276,7 +277,7 @@ function nt_action(wid, eves)
 	})
 	if (early_ret)
 	    return
-	wid.setAt("game_state", END_TURN_REPORT)
+	wid.setAt("game_state", END_TURN_EVENTS)
 	reset_countries_flags(wid)
 	print("out fight : ", have_win, have_lose)
 	if (have_win) {
@@ -287,9 +288,13 @@ function nt_action(wid, eves)
 	    ygCallFuncOrQuit(wid, "lose");
 	}
 	return
+    } else if (game_state == END_TURN_EVENTS) {
+	ok_text(wid, "end turn events", back_to_state, END_TURN_REPORT)
+	wid.setAt("game_state", WAIT_BUTTON_IN)
+	return
     } else if (game_state == END_TURN_REPORT) {
 	end_turn_report(wid)
-	wid.setAt("game_state", WAIT_ACTION)
+	wid.setAt("game_state", WAIT_BUTTON_IN)
 	return
     }
     let selected_country = wid.get("selected_country")
