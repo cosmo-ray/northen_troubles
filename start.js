@@ -289,7 +289,8 @@ function nt_action(wid, eves)
 	}
 	return
     } else if (game_state == END_TURN_EVENTS) {
-	ok_text(wid, "end turn events", back_to_state, END_TURN_REPORT)
+	let event = yeGetRandomElem(wid.get("events"))
+	ok_text(wid, event.gets("txt"), back_to_state, END_TURN_REPORT)
 	wid.setAt("game_state", WAIT_BUTTON_IN)
 	return
     } else if (game_state == END_TURN_REPORT) {
@@ -352,6 +353,7 @@ function nt_canvas_init(wid, map_img)
     yePush(wid, map, "map")
     yePush(wid, units, "units")
     yePush(wid, stories, "stories")
+    yePush(wid, events, "events")
     let squads = yeCreateHash(wid, "squads")
 
     map.forEach(function (state, i) {
