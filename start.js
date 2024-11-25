@@ -116,7 +116,7 @@ function end_turn_report(wid)
     turn_end_txt = "Turn end report:\n"
     turn_end_txt += "Wealth gain: " + added_wealth
     turn_end_txt += "\nTotal charge: " + charge
-    ok_text(wid, turn_end_txt, back)
+    ok_text(wid, turn_end_txt, back_to_state, WAIT_ACTION)
 }
 
 function back(wid)
@@ -290,6 +290,13 @@ function nt_action(wid, eves)
 	return
     } else if (game_state == END_TURN_EVENTS) {
 	let event = yeGetRandomElem(wid.get("events"))
+	let squads = wid.get("squads")
+	let action_squad = yeGetRandomElem(squads)
+	yePrint(action_squad)
+	print("action s name:", yeHashKey(squads, action_squad));
+	yePrint(ygGet("northen_troubles.active_country.poor_relation"))
+	//ywidActions(event, wid)
+	yePrint(ygGet("northen_troubles.active_country.poor_relation"))
 	ok_text(wid, event.gets("txt"), back_to_state, END_TURN_REPORT)
 	wid.setAt("game_state", WAIT_BUTTON_IN)
 	return
