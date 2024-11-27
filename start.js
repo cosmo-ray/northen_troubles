@@ -180,7 +180,9 @@ function do_move(wid, to)
 function nt_action(wid, eves)
 {
     let game_state = wid.geti("game_state")
+    let mod = ygGet("northen_troubles")
 
+    mod.setAt("active_widget", wid)
     if (game_state == STORY_STATE) {
 	print("game_stat")
 	let cur_story = wid.gets("cur_story")
@@ -289,13 +291,37 @@ function nt_action(wid, eves)
 	}
 	return
     } else if (game_state == END_TURN_EVENTS) {
-	let event = yeGetRandomElem(wid.get("events"))
+	let event = null
 	let squads = wid.get("squads")
-	let action_squad = yeGetRandomElem(squads)
-	yePrint(action_squad)
+	let action_squad = null
+	let have_good_guys = false
+	while (have_good_guys == false) {
+	    action_squad = yeGetRandomElem(squads)
+	    for (let s of action_squad) {
+		if (s.gets("faction") == "good") {
+		    let map = wid.get("map")
+		    let active_country = map.get(yeHashKey(squads, action_squad))
+		    mod.setAt("active_country", active_country)
+		    let is_condition_ok = false
+		    while (is_condition_ok == false) {
+			event = yeGetRandomElem(wid.get("events"))
+			let condition = event.get("conditions")
+			if (!condition || yeCheckCondition(condition)) {
+			    is_condition_ok = true
+			}
+		    }
+		    have_good_guys = true
+		}
+	    }
+	}
 	print("action s name:", yeHashKey(squads, action_squad));
+	yePrint(event)
 	yePrint(ygGet("northen_troubles.active_country.poor_relation"))
-	//ywidActions(event, wid)
+	yePrint(ygGet("northen_troubles.active_country.noble_relation"))
+
+	ywidActions(wid, event)
+
+	yePrint(ygGet("northen_troubles.active_country.noble_relation"))
 	yePrint(ygGet("northen_troubles.active_country.poor_relation"))
 	ok_text(wid, event.gets("txt"), back_to_state, END_TURN_REPORT)
 	wid.setAt("game_state", WAIT_BUTTON_IN)
