@@ -346,3 +346,35 @@ function ok_text(wid, txt, func, arg)
     mk_button(wid, ok_ux, main_buttons, "Ok", 150, 150 + w_h[1] + 10, "100 100 100",
 	      func, arg)
 }
+
+function multy_answers_text(wid, txt, answers)
+{
+    let ok_ux = yeTryCreateArray(wid, "ok_ux")
+
+    // if not string assuming entity
+    if (typeof txt != "string") {
+	if (yeType(txt) == YSTRING) {
+	    txt = txt.s(txt)
+	} else {
+	    let new_txt = ""
+	    for (let t of txt) {
+		if (new_txt != "")
+		    new_txt += "\n"
+		new_txt = new_txt + t.s()
+	    }
+	    txt = new_txt
+	}
+    }
+    let w_h = square_txt(wid, ok_ux, 150, 150, "100 100 100", txt)
+
+    let y = 150 + w_h[1] + 10
+    for (a of answers) {
+	let txt = a[0]
+	let func = a[1]
+	let arg = a[2]
+
+	w_h = mk_button(wid, ok_ux, main_buttons, txt, 150, y, "100 100 100",
+			     func, arg)
+	y += w_h[1] + 5
+    }
+}

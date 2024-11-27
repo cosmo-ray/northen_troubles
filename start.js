@@ -295,6 +295,7 @@ function nt_action(wid, eves)
 	let squads = wid.get("squads")
 	let action_squad = null
 	let have_good_guys = false
+
 	while (have_good_guys == false) {
 	    action_squad = yeGetRandomElem(squads)
 	    for (let s of action_squad) {
@@ -314,16 +315,21 @@ function nt_action(wid, eves)
 		}
 	    }
 	}
-	print("action s name:", yeHashKey(squads, action_squad));
-	yePrint(event)
-	yePrint(ygGet("northen_troubles.active_country.poor_relation"))
-	yePrint(ygGet("northen_troubles.active_country.noble_relation"))
 
 	ywidActions(wid, event)
-
-	yePrint(ygGet("northen_troubles.active_country.noble_relation"))
-	yePrint(ygGet("northen_troubles.active_country.poor_relation"))
-	ok_text(wid, event.gets("txt"), back_to_state, END_TURN_REPORT)
+	let counter_actions = event.get("counter_actions")
+	if (counter_actions) {
+	    let answers = []
+	    for (ca of counter_actions) {
+		if (yeType(ca) == YSTRING)
+		    answers.push([ca.s(), back_to_state, END_TURN_REPORT])
+		else
+		    answers.push([ca.gets("text"), back_to_state, END_TURN_REPORT])
+	    }
+	    multy_answers_text(wid, event.gets("txt"), answers)
+	} else {
+	    ok_text(wid, event.gets("txt"), back_to_state, END_TURN_REPORT)
+	}
 	wid.setAt("game_state", WAIT_BUTTON_IN)
 	return
     } else if (game_state == END_TURN_REPORT) {
