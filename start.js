@@ -359,12 +359,14 @@ function nt_canvas_init(wid, map_img)
     const wid_rect = wid.get("wid-pix");
     const bg_size = ywSizeCreate(ywRectW(wid_rect), ywRectH(wid_rect))
 
+    ygModDir("northen_troubles")
     let items = ygFileToEnt(YJSON, "./items.json")
     wid.setAt("items", items)
     let map = ygFileToEnt(YJSON, "./map.json")
     let units = ygFileToEnt(YJSON, "./units.json")
     let stories = ygFileToEnt(YJSON, "./stories.json")
     let events = ygFileToEnt(YJSON, "./events.json")
+    ygModDirOut()
 
     let rect_texture = ywRectCreateInts(0, 0, 32, 32)
     ywTextureNewImg("flag_captured.png", rect_texture, wid, "neutral_flag")
@@ -507,6 +509,7 @@ function mod_init(mod)
     ygAddModule(Y_MOD_LOCAL, mod, "auto-rpg")
     let test_wid = ygInitWidgetModule(mod, "northen-troubles", yeCreateFunction("nt_init"))
     let map_img = yeCreateArray(test_wid, "map-img")
+    ygModDirByEntity(mod)
     map_img.setAt(0, "./northern_isle.png")
     ywRectCreateInts(1900, 1860, 1900, 2300, map_img)
     //test_wid.setAt("map-img", "./northern_isle.png")
@@ -515,5 +518,6 @@ function mod_init(mod)
     ysLoadFile(ygGetManager("js"), "buttons.js");
     ysLoadFile(ygGetManager("js"), "squads.js");
     ysLoadFile(ygGetManager("js"), "countries.js");
+    ygModDirOut();
     return mod
 }
