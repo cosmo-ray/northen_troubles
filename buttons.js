@@ -90,6 +90,7 @@ function square_txt(wid, container, x, y, color, txt, fixe_w, fixe_h)
     yePushBack(container,
 	       ywCanvasNewRectangleExt(wid, x, y, w,
 				       h, "rgba: " + color + " 255", 2))
+    print(w, h)
     yePushBack(container,
 	       ywCanvasNewRectangleExt(wid, x, y, w,
 				       h, "rgba: " + color + " " + alpha, 3))

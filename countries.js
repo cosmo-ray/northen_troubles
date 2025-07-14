@@ -132,21 +132,21 @@ function country_action(wid, eves, selected_country)
 
 	square_txt(wid, country_ux, 10, 50, "160 160 160", "Squades in town",
 		   200, 200)
-	square_txt(wid, country_ux, 200, 50, "160 160 160", "town factions relationship",
+	square_txt(wid, country_ux, 250, 50, "160 160 160", "town factions relationship",
 		   250, 200)
 
 	let cur_map = map.get(selected_country.i())
-	mk_txt(wid, "poor_txt", 210, 80, "0 0 0", "poor relation:")
-	mk_bar(wid, "poor_bar", cur_map.geti("poor_relation"), 210, 100, 180, "0 100 0")
+	mk_txt(wid, "poor_txt", 260, 80, "0 0 0", "poor relation:")
+	mk_bar(wid, "poor_bar", cur_map.geti("poor_relation"), 260, 100, 180, "0 100 0")
 
 	if (cur_map.get("guard_relation")) {
-	    mk_txt(wid, "guards_txt", 210, 120, "0 0 0", "guards relation:")
-	    mk_bar(wid, "guards_bar", cur_map.geti("guard_relation"), 210, 140, 180, "0 100 0")
+	    mk_txt(wid, "guards_txt", 260, 120, "0 0 0", "guards relation:")
+	    mk_bar(wid, "guards_bar", cur_map.geti("guard_relation"), 260, 140, 180, "0 100 0")
 	}
 
 	if (cur_map.get("guard_relation")) {
-	    mk_txt(wid, "noble_txt", 210, 160, "0 0 0", "noble relation:")
-	    mk_bar(wid, "noble_bar", cur_map.geti("noble_relation"), 210, 180, 180, "0 100 0")
+	    mk_txt(wid, "noble_txt", 260, 160, "0 0 0", "noble relation:")
+	    mk_bar(wid, "noble_bar", cur_map.geti("noble_relation"), 260, 180, 180, "0 100 0")
 	}
 
 	let s_y = 85
