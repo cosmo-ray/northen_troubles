@@ -267,6 +267,7 @@ function nt_action(wid, eves)
 		nt_container.setAt("battle_squads", squads)
 
 		battle.setAt("<type>", "jrpg-auto")
+		battle.setAt("background", "battle-bg/battle-background-sunny-hillsx4.png")
 		yeCreateFunction(battle_end, battle, "win")
 		yeCreateFunction(battle_end, battle, "lose")
 		units.push(good.get("guys"))
