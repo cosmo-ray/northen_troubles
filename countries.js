@@ -24,10 +24,10 @@ function select_country(wid, eves)
 	mouse_press = true
     }
 
-    if (main_buttons.length == 0) {
+    if (!wid.get("smart_ux") || !wid.get("smart_ux").get("end_turn")) {
 	let ux = yeTryCreateArray(wid, "select_ux")
 	let wid_pix = yeGet(wid, "wid-pix");
-	mk_button(wid, ux, main_buttons, "End Turn", ywRectW(wid_pix) - 80, 10,
+	mk_button2(wid, "end_turn", "End Turn", ywRectW(wid_pix) - 80, 10,
 		  "120 140 130", end_turn)
 
 	square_txt(wid, ux, 10, 10, "120 140 130", "wealth: " + wid.geti("wealth"))
@@ -81,6 +81,7 @@ function select_country(wid, eves)
 		    ywCanvasRemoveObj(wid, c)
 		})
 		main_buttons = []
+		rm_button2(wid, "end_turn")
 	    }
 	})
     }
