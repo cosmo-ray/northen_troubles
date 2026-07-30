@@ -166,19 +166,21 @@ function country_action(wid, eves, selected_country)
 		move_to = " -> " + move_to
 	    else
 		move_to = ""
-	    let w_h = square_txt(wid, country_ux, 20, s_y, color, name + " of " + size + move_to)
 	    if (faction == "good") {
-		main_buttons.push([[20, s_y, w_h[0], w_h[1]], sq_select, s])
+		mk_button2(wid, "sq-" + i, name + " of " + size + move_to,
+			   20, s_y, color, sq_select, s)
 		have_good_guys = true
+	    } else {
+		square_txt(wid, country_ux, 20, s_y, color, name + " of " + size + move_to)
 	    }
 	    s_y += 35
 	})
 
 	/* back */
-	mk_button(wid, country_ux, main_buttons, "Back", ywRectW(wid_pix) - 70, 10,
+	mk_button2(wid, "back", "Back", ywRectW(wid_pix) - 70, 10,
 		  "120 140 130", back)
 	if (have_good_guys) {
-	    mk_button(wid, country_ux, main_buttons, "Hire new Team",
+	    mk_button2(wid, "hire_new_team", "Hire new Team",
 		      ywRectW(wid_pix) - 200, 10, "120 140 130", hire)
 	}
     }
