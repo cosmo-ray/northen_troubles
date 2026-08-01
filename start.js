@@ -203,8 +203,8 @@ function nt_action(wid, eves)
 	let all_squads = wid.get("squads")
 	let wealth = wid.geti("wealth")
 
-	all_squads.forEach(function (squads, country) {
-	    squads.forEach(function (s, i) {
+	all_squads.forEachNonNull(function (squads, country) {
+	    squads.forEachNonNull(function (s, i) {
 		if (s.gets("faction") != "good")
 		    return;
 		if (s.gets("move_to")) {

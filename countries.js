@@ -151,7 +151,7 @@ function country_action(wid, eves, selected_country)
 	}
 
 	let s_y = 85
-	squads.forEach(function (s, i) {
+	squads.forEachNonNull(function (s, i) {
 	    let name = yeGetKeyAt(squads, i)
 	    let size = yeLen(s.get("guys"))
 	    let color = "100 100 100"
