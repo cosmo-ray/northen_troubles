@@ -157,7 +157,8 @@ let selected_sq = null
 function do_move(wid, to)
 {
     let map = wid.get("map")
-    let to_info = map.get(to[0])
+    let dest = to.s(0)
+    let to_info = map.get(dest)
     print("do move")
     yePrint(to_info.get("where"))
     const where = to_info.get("where")
@@ -172,7 +173,7 @@ function do_move(wid, to)
 	       where.geti(0) + where.geti(2) / 2,
 	       where.geti(1) + where.geti(3) / 3,
 	       "rgba: 20 20 20 255")
-    yeCreateString(to, selected_sq, "move_to")
+    yeCreateString(dest, selected_sq, "move_to")
     yePrint(selected_sq)
     back(wid)
 }

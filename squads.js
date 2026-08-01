@@ -27,8 +27,9 @@ function move_to(wid)
     let b_y = 450
 
     avaible_dest.forEach(function (d, i) {
-	let w_h = mk_button(wid, ux, to_buttons, yeGetString(d), 250, b_y, "100 100 100",
-			    do_move, [yeGetString(d)])
+	let dest = yeGetString(d)
+	mk_button2(wid, "move-to-" + i, dest, 250, b_y, "100 100 100",
+		   do_move, dest)
 	b_y += 35
     })
     map.forEach( function (c, i) {
