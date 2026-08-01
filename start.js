@@ -157,7 +157,7 @@ let selected_sq = null
 function do_move(wid, to)
 {
     let map = wid.get("map")
-    let dest = to.s(0)
+    let dest = to.s()
     let to_info = map.get(dest)
     print("do move")
     yePrint(to_info.get("where"))

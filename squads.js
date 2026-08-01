@@ -202,18 +202,19 @@ function sq_select(wid, s)
 
     print("sq select !!", selected_sq)
     if (selected_sq) {
-	main_buttons.pop()
-	/* 3 element par button */
-	ywCanvasArrayPop(wid, ux)
-	ywCanvasArrayPop(wid, ux)
-	ywCanvasArrayPop(wid, ux)
+	rm_button2(wid, "sq-select-move")
+	let i = 0
+	for (let g of selected_sq.get("guys")) {
+	    rm_button2(wid, "select-guy-" + i)
+	    ++i
+	}
     }
     selected_sq = s
 
     square_txt(wid, ux, 90, 58, "150 150 150 180", "Squad", ywRectW(wid_pix) - 160, 500)
 
-    mk_button(wid, ux, main_buttons, "Move", 150, ywRectH(wid_pix) - 80,
-	      "100 200 100", move_to)
+    mk_button2(wid, "sq-select-move", "Move", 150, ywRectH(wid_pix) - 80,
+	       "100 200 100", move_to)
     let guys = s.get("guys")
     let y_g = 90
     let x_g =  110
@@ -221,8 +222,8 @@ function sq_select(wid, s)
     for (let g of guys) {
 	let txt = g.gets("name") + "\n"
 	txt += "PV: " + g.geti("life") + " / " + g.geti("max_life")
-	square_txt(wid, ux, x_g, y_g, "100 100 100", txt)
-	mk_button(wid, ux, main_buttons, txt, x_g, y_g, "100 100 100", select_guy, g)
+	mk_button2(wid, "select-guy-" + i, txt, x_g, y_g, "100 100 100",
+		   select_guy, g)
 	x_g += 300
 	++i
 	if (i == 3) {
